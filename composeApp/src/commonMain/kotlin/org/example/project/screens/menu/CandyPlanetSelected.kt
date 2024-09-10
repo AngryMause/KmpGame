@@ -1,4 +1,7 @@
 package org.example.project.screens.menu
 
-enum class CandyPlenetSelected {
+enum class CandyPlanetSelected {
+    CANDY,
+    PLANET,
+    NONE
 }
