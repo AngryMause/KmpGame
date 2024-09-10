@@ -26,7 +26,8 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -43,6 +44,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            api(compose.components.resources)
         }
     }
 }
@@ -82,5 +84,8 @@ android {
     dependencies {
         debugImplementation(compose.uiTooling)
     }
+}
+dependencies {
+    implementation(libs.androidx.media3.common)
 }
 
