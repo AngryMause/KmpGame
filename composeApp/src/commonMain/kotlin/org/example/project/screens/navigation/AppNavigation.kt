@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.example.project.screens.SettingScreen
+import org.example.project.screens.setting.SettingScreen
 import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame
 import org.example.project.screens.splash.SplashScreen
