@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.example.project.screens.SettingScreen
+import org.example.project.screens.setting.SettingScreen
 import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame
 import org.example.project.screens.splash.SplashScreen
@@ -15,11 +15,13 @@ fun AppNavigation() {
     val navHost = rememberNavController()
     NavHost(
         navController = navHost,
-        startDestination = ScreenRoute.MENU.name
+        startDestination = ScreenRoute.SPLASH.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {
-            SplashScreen()
+            SplashScreen(openMenu = {
+                navHost.navigate(ScreenRoute.MENU.name)
+            })
         }
         // Menu
         composable(ScreenRoute.MENU.name) { backStackEntry->

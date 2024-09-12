@@ -16,6 +16,7 @@ junit = "4.13.2"
 kotlin = "2.0.20"
 navigationCompose = "2.7.0-alpha07"
 media3Common = "1.4.1"
+#uiGeometryJvmstubs = "1.7.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -33,6 +34,7 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
+#androidx-ui-geometry-jvmstubs = { group = "androidx.compose.ui", name = "ui-geometry-jvmstubs", version.ref = "uiGeometryJvmstubs" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

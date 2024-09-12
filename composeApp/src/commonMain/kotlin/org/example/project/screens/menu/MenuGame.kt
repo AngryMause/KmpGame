@@ -29,22 +29,26 @@ import androidx.compose.ui.unit.dp
 import firstkmpproject.composeapp.generated.resources.Res
 import firstkmpproject.composeapp.generated.resources.star
 import org.jetbrains.compose.resources.painterResource
+import org.lighthousegames.logging.logging
 
 @Composable
 fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
+    val log = logging("SplashScreen")
+    Box {
+        Column(modifier = Modifier.fillMaxSize()) {
+            planetList.forEachIndexed { index, name ->
+                MenuGameContent(modifier = Modifier.wrapContentSize(), name = name, onSelect = {
+                    onGameStar(it)
+                })
+            }
 
-    Column (modifier = Modifier.fillMaxSize()) {
-        planetList.forEachIndexed { index, name ->
-            MenuGameContent(modifier = Modifier.wrapContentSize(), name = name, onSelect = {
-                onGameStar(it)
-            })
+//
         }
-
-//        Icon(
-//            Icons.Default.Settings,
-//            contentDescription = "",
-//            modifier = Modifier.padding(30.dp).size(55.dp).align(Alignment.BottomStart)
-//                .clickable { onSettingsOpen() })
+        Icon(
+            Icons.Default.Settings,
+            contentDescription = "Settings",
+            modifier = Modifier.padding(30.dp).size(55.dp).align(Alignment.BottomStart)
+                .clickable { onSettingsOpen() })
     }
 }
 
@@ -57,8 +61,8 @@ fun MenuGameContent(modifier: Modifier, name: String, onSelect: (String) -> Unit
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
     ) {
         Text(name, color = Color.Red, modifier = Modifier)
-        FlowRow(maxItemsInEachRow = 3, modifier = Modifier.padding(10.dp),) {
-                Image(
+        FlowRow(maxItemsInEachRow = 3, modifier = Modifier.padding(10.dp)) {
+            Image(
                 painter = painterResource(Res.drawable.star),
                 contentDescription = "Planet",
                 modifier = Modifier.size(20.dp).clickable { onSelect(name) }

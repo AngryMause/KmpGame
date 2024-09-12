@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +21,7 @@ import androidx.compose.ui.unit.sp
 fun GameScreen(onBack: () -> Unit, string: String) {
     Box(modifier = Modifier.fillMaxSize().background(Color.Blue.copy(alpha = 0.6f))) {
         Icon(
-            Icons.Default.ArrowBack,
+            Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = null,
             modifier = Modifier.padding(20.dp).clickable {
                 onBack()

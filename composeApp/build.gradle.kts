@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(compose.runtime)
+            api("org.lighthousegames:logging:1.5.0")
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
