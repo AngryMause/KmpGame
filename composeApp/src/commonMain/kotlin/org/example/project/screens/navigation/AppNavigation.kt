@@ -21,6 +21,11 @@ fun AppNavigation() {
         composable(ScreenRoute.SPLASH.name) {
             SplashScreen(openMenu = {
                 navHost.navigate(ScreenRoute.MENU.name)
+                {
+                    popUpTo(ScreenRoute.SPLASH.name){
+                        inclusive = true
+                    }
+                }
             })
         }
         // Menu
