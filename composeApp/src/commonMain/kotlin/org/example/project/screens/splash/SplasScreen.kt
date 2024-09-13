@@ -27,6 +27,8 @@ import firstkmpproject.composeapp.generated.resources.loading
 import firstkmpproject.composeapp.generated.resources.main_backgroud
 import firstkmpproject.composeapp.generated.resources.progressbar_background
 import firstkmpproject.composeapp.generated.resources.splash_image
+import org.example.project.screens.elements.CustomProgressBar
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.lighthousegames.logging.logging
 
@@ -56,9 +58,10 @@ fun SplashScreen(openMenu: () -> Unit) {
             contentDescription = null,
             modifier = Modifier.align(Alignment.Center).fillMaxWidth()
         )
-        SplashProgress(
+        CustomProgressBar(
             Modifier.align(Alignment.BottomCenter).padding(20.dp),
-            progress = alpha
+            progress = alpha,
+            Res.drawable.progressbar_background
         )
     }
 }
