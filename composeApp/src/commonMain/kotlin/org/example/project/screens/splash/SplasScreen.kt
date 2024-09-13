@@ -66,23 +66,6 @@ fun SplashScreen(openMenu: () -> Unit) {
     }
 }
 
-@Composable
-fun SplashProgress(modifier: Modifier = Modifier, progress: Float) {
-    Box(
-        modifier = modifier
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            LinearProgressIndicator(
-                progress = progress,
-                color = Color.Yellow,
-                modifier = Modifier.fillMaxWidth().paint(
-                    painterResource(Res.drawable.progressbar_background),
-                    contentScale = ContentScale.FillBounds
-                ).padding(12.dp)
-            )
-            Image(painter = painterResource(Res.drawable.loading), contentDescription = null)
-        }
-    }
-}
+
 
 
