@@ -15,7 +15,7 @@ fun AppNavigation() {
     val navHost = rememberNavController()
     NavHost(
         navController = navHost,
-        startDestination = ScreenRoute.SPLASH.name
+        startDestination = ScreenRoute.SETTING.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {

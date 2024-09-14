@@ -6,7 +6,6 @@ import org.example.project.screens.navigation.AppNavigation
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
 fun App() {
     MaterialTheme {
 //        var showContent by remember { mutableStateOf(false) }
