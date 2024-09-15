@@ -1,17 +1,12 @@
 package org.example.project
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 //private val cache: MutableMap<String, Font> = mutableMapOf()
-//@OptIn(ExperimentalResourceApi::class)
-//@Composable
-//actual fun font(
+//actual fun getFont(
 //    name: String,
 //    res: String,
 //    weight: FontWeight,
@@ -23,8 +18,4 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 //        }
 //        Font(res, byteArray, weight, style)
 //    }
-//}
-//
-//fun resource(s: String): Any {
-//    TODO("Not yet implemented")
 //}
