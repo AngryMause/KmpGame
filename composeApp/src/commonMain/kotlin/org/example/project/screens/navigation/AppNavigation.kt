@@ -15,7 +15,7 @@ fun AppNavigation() {
     val navHost = rememberNavController()
     NavHost(
         navController = navHost,
-        startDestination = ScreenRoute.MENU.name
+        startDestination = ScreenRoute.GAME.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {
@@ -36,7 +36,7 @@ fun AppNavigation() {
         }
         // Game
         composable("${ScreenRoute.GAME.name}/{$PLANET_NAME}") { backStackEntry->
-            val str= backStackEntry.arguments?.getString(PLANET_NAME)
+            val str= backStackEntry.arguments?.getString(PLANET_NAME)?: "1"
             str?.let {
                 GameScreen(
                     onBack = {

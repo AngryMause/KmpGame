@@ -38,6 +38,7 @@ import firstkmpproject.composeapp.generated.resources.game_over
 import firstkmpproject.composeapp.generated.resources.home_button
 import firstkmpproject.composeapp.generated.resources.jomhuria_regular
 import firstkmpproject.composeapp.generated.resources.level_complete
+import firstkmpproject.composeapp.generated.resources.level_locked
 import firstkmpproject.composeapp.generated.resources.loading
 import firstkmpproject.composeapp.generated.resources.lose_frame
 import firstkmpproject.composeapp.generated.resources.menu_level
@@ -100,24 +101,27 @@ fun LevelBox(
     Box(
         modifier = modifier
             .paint(
-                painter = painterResource(Res.drawable.menu_level),
+                painter = painterResource(if (gameLevelModel.isLevelUnlocked) Res.drawable.menu_level else Res.drawable.level_locked),
                 contentScale = ContentScale.FillBounds
             )
             .clickable { onClick() }
     ) {
-        Text(
-            text = gameLevelModel.levelName,
-            modifier = Modifier.align(Alignment.Center).padding(top = 10.dp),
-            color = Color.White,
-            fontSize = 38.sp,
-            style = getTypography().h1
-        )
-        Image(
-            painterResource(getStarImage(gameLevelModel.levelProgress)),
-            contentDescription = null,
-            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(0.8f)
-                .fillMaxHeight(0.2f).padding(bottom = 10.dp)
-        )
+        if (gameLevelModel.isLevelUnlocked) {
+            Text(
+                text = gameLevelModel.levelName,
+                modifier = Modifier.align(Alignment.Center).padding(top = 10.dp),
+                color = Color.White,
+                fontSize = 38.sp,
+                style = getTypography().h1
+            )
+            Image(
+                painterResource(getStarImage(gameLevelModel.levelProgress)),
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(0.8f)
+                    .fillMaxHeight(0.2f).padding(bottom = 10.dp)
+            )
+        }
+
     }
 }
 
@@ -216,7 +220,8 @@ private fun getStarImage(levelProgress: LevelProgress): DrawableResource {
 fun CustomProgressBar(
     modifier: Modifier = Modifier,
     progress: Float,
-    background: DrawableResource
+    background: DrawableResource,
+    isShowLoading: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -230,7 +235,8 @@ fun CustomProgressBar(
                     contentScale = ContentScale.FillBounds
                 ).padding(12.dp)
             )
-            Image(painter = painterResource(Res.drawable.loading), contentDescription = null)
+            if (isShowLoading)
+                Image(painter = painterResource(Res.drawable.loading), contentDescription = null)
         }
     }
 }
