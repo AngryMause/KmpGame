@@ -21,14 +21,14 @@ import firstkmpproject.composeapp.generated.resources.main_backgroud
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.settings_button
 import org.example.project.data.local.LevelProgressState
-import org.example.project.model.GameLevelModel
+import org.example.project.model.MenuLevelModel
 import org.example.project.repository.GameLevelStatus
 import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
 import org.lighthousegames.logging.logging
 
 @Composable
-fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (GameLevelStatus) -> Unit) {
+fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
     val log = logging("SplashScreen")
     Box {
         Column(
@@ -48,7 +48,7 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (GameLevelStatus) -> Unit) 
                     LevelBox(
                         modifier = Modifier.padding(10.dp),
                         gemeLevelList[index],
-                        onClick = { onGameStar(gemeLevelList[index].levelName) }
+                        onClick = { onGameStar(gemeLevelList[index].levelName.levelName) }
                     )
                 }
             }
@@ -62,47 +62,47 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (GameLevelStatus) -> Unit) 
 }
 
 private val gemeLevelList = listOf(
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_0NE,
         isLevelUnlocked = true,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_TWO,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_THREE,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_FOUR,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_FIVE,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_SIX,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_SEVEN,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_EIGHT,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
-    GameLevelModel(
+    MenuLevelModel(
         GameLevelStatus.LEVEL_NINE,
         isLevelUnlocked = false,
         levelProgress = LevelProgressState.NOT_COMPLETED

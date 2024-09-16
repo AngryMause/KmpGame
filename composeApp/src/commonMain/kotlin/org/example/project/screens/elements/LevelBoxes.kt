@@ -48,7 +48,7 @@ import firstkmpproject.composeapp.generated.resources.star2
 import firstkmpproject.composeapp.generated.resources.star3
 import firstkmpproject.composeapp.generated.resources.win_frame
 import org.example.project.data.local.LevelProgressState
-import org.example.project.model.GameLevelModel
+import org.example.project.model.MenuLevelModel
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -93,7 +93,7 @@ fun LevelCompleteAlert(modifier: Modifier, levelProgress: LevelProgressState, on
 @Composable
 fun LevelBox(
     modifier: Modifier,
-    gameLevelModel: GameLevelModel,
+    gameLevelModel: MenuLevelModel,
     onClick: () -> Unit
 ) {
     Box(

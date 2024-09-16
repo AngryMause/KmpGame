@@ -68,7 +68,6 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun SettingScreen(onBack: () -> Unit) {
     val viewModel = remember { SettingViewModel() }
-
     var checked by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize()
