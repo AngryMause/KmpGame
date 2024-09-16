@@ -34,19 +34,26 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(libs.koin.core)
             implementation(libs.navigation.compose)
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(compose.runtime)
-            api("org.lighthousegames:logging:1.5.0")
+            api(libs.logging)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(compose.components.resources)
+
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
             api(compose.components.resources)
+            api(libs.datastore.preferences)
+            api(libs.datastore)
         }
     }
 }
@@ -54,7 +61,6 @@ kotlin {
 android {
     namespace = "org.example.project"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
