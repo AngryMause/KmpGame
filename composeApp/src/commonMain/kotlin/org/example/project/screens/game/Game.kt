@@ -8,8 +8,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,9 +23,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,13 +37,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import firstkmpproject.composeapp.generated.resources.Res
@@ -50,68 +53,173 @@ import firstkmpproject.composeapp.generated.resources.game_progress_bar_game
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.timer_background
 import firstkmpproject.composeapp.generated.resources.ultimate
-import org.example.project.repository.GameLevelStatus
+import kotlinx.coroutines.flow.StateFlow
+import org.example.project.data.local.LevelProgressState
+import org.example.project.model.GameLevelItemModel
+import org.example.project.repository.GameStatus.*
 import org.example.project.screens.elements.CustomProgressBar
+import org.example.project.screens.elements.GameOverAlert
+import org.example.project.screens.elements.LevelCompleteAlert
 import org.example.project.screens.elements.getTypography
+import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.lighthousegames.logging.logging
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalComposeUiApi::class)
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun GameScreen(onBack: () -> Unit, string: String) {
     val log = logging("GameScreen")
 
     val viewModel = koinViewModel<GameViewM0del>()
-    var timer by remember { mutableStateOf(0) }
 
-    LaunchedEffect(key1 = timer) {
-        log.e { "timer $timer" }
-        viewModel.createTimer() {
-            timer = it.toInt()
-        }
+    val gameStatus = viewModel.gameStatus.collectAsState()
+    val gameLevel = viewModel.gameLevel.collectAsState()
+    val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
 
-    }
-    Box(modifier = Modifier.fillMaxSize().onGloballyPositioned {
-        viewModel.initGame(it.size, string)
-    }.background(Color.Blue.copy(alpha = 0.6f))) {
+    Box(
+        modifier = Modifier.fillMaxSize().onGloballyPositioned {
+            viewModel.initGame(it.size, string)
+        }.paint(
+            painterResource(requireNotNull(gameLevel.value.background)),
+            contentScale = ContentScale.FillBounds
+        )
+    ) {
         GameTopBar(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f).padding(20.dp),
-            time = timer,
-            levelName = string
+            time = gameTopBarModel.value.levelTime,
+            levelName = gameTopBarModel.value.levelName,
+            gameProgress = gameTopBarModel.value.levelProgress.toFloat()
         )
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures()
-                    detectTapGestures(
-                        onLongPress = {
-                            timer += 1
-                        }
-                    )
-                }
-//                .pointerInteropFilter { event ->
-//                    when (event.action) {
-//                        MotionEvent.ACTION_MOVE -> {
-//                            viewModel.setMoveX(event.x.toInt())
-//                        }
-//
-//                        else -> Unit
-//                    }
-//                    true
-//                }
-        ) {
+        when (gameStatus.value) {
+            LOADING -> {
+                log.e { "LOADING" }
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp).align(Alignment.Center)
+                        .clickable {
+                            viewModel.setGameStatus(PLAYING)
 
+                        },
+                )
+            }
+
+            PLAYING -> {
+                log.i { "PLAYING" }
+                GameArea(
+                    canvasModifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            log.e { "pointerInput " }
+                            detectTapGestures(
+                                onPress = { onPressOffset ->
+                                    detectDragGesturesAfterLongPress(
+                                        onDrag = { tt, dragAmount ->
+                                        },
+                                        onDragEnd = {
+                                            log.e { "onDragEnd" }
+                                        }
+                                    )
+                                    log.e { "onPress ${onPressOffset}" }
+                                },
+                                onTap = { ofset ->
+                                    viewModel.setTapOffset(ofset)
+                                    log.e { "onTap ${ofset}" }
+                                },
+                                onLongPress = {
+                                    log.e { "onLongPress ${it}" }
+                                }
+                            )
+                        }, gameLevel = gameLevel.value
+                )
+                Image(
+                    painter = painterResource(Res.drawable.ultimate),
+                    contentDescription = null,
+                    modifier = Modifier.padding(30.dp).size(40.dp).align(Alignment.BottomEnd)
+                        .clickable {
+                            viewModel.pauseDropped()
+                        },
+                )
+            }
+
+            GAME_OVER -> {
+                log.e { "GAME_OVER" }
+                GameOverAlert(
+                    modifier = Modifier.fillMaxSize(),
+                    onClick = {
+                        onBack()
+                    }, reload = {
+                        viewModel.restartGame()
+                    }
+                )
+
+            }
+
+            LEVEL_COMPLETE -> {
+                log.e { "LEVEL_COMPLETE" }
+                LevelCompleteAlert(
+                    modifier = Modifier.fillMaxSize(),
+                    levelProgress = LevelProgressState.ONE_STAR,
+                    onClick = {
+                        onBack()
+                    }
+                )
+            }
         }
-        Image(
-            painter = painterResource(Res.drawable.ultimate),
-            contentDescription = null,
-            modifier = Modifier.size(40.dp).align(Alignment.BottomEnd).padding(30.dp),
-        )
     }
 }
+
+@Composable
+fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
+    val imade = if (gameLevel.droppedImage != null) {
+        imageResource(gameLevel.droppedImage)
+    } else {
+        null
+    }
+    val list: List<DroppedItemList> = if (gameLevel.itemList.isNotEmpty()) {
+        gameLevel.itemList.map {
+            DroppedItemList(
+                drawableResource = imageResource(it.drawableResource),
+                intOffset = it.intOffset,
+                size = IntSize(it.size.width, it.size.height)
+            )
+        }
+    } else {
+        emptyList()
+    }
+    Canvas(
+        modifier = canvasModifier
+    ) {
+        when {
+            list.isNotEmpty() -> {
+                list.forEach {
+                    drawImage(
+                        image = it.drawableResource,
+                        dstOffset = it.intOffset,
+                        dstSize = it.size
+                    )
+                }
+            }
+
+            imade != null -> {
+                drawImage(
+                    image = imade,
+                    dstOffset = gameLevel.intOffset,
+                    dstSize = gameLevel.size
+                )
+            }
+        }
+    }
+}
+
+data class DroppedItemList(
+    val drawableResource: ImageBitmap,
+    val intOffset: IntOffset = IntOffset.Zero,
+    val size: IntSize = IntSize(100, 100)
+)
+
 
 @Composable
 fun GameTopBar(modifier: Modifier, time: Int, levelName: String, gameProgress: Float = 0.5f) {

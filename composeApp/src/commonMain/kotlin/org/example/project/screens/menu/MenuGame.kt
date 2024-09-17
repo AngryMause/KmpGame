@@ -69,7 +69,7 @@ private val gemeLevelList = listOf(
     ),
     MenuLevelModel(
         GameLevelStatus.LEVEL_TWO,
-        isLevelUnlocked = false,
+        isLevelUnlocked = true,
         levelProgress = LevelProgressState.NOT_COMPLETED
     ),
     MenuLevelModel(

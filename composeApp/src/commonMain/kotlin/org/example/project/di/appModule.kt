@@ -8,7 +8,7 @@ import org.koin.dsl.module
 import org.koin.mp.KoinPlatform.startKoin
 
 val appModule = module {
-    single { GameRepository() }
+    factory { GameRepository() }
     viewModel { GameViewM0del(get()) }
 }
 

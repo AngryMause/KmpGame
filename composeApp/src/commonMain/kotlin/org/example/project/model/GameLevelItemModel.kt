@@ -8,17 +8,23 @@ import firstkmpproject.composeapp.generated.resources.main_backgroud
 import org.jetbrains.compose.resources.DrawableResource
 
 data class GameLevelItemModel(
-    val background: DrawableResource,
-    val droppedImage: DrawableResource,
+    val background: DrawableResource? = null,
+    val droppedImage: DrawableResource? = null,
+    val itemList: List<ItemListModel> = emptyList(),
     val intOffset: IntOffset,
-    val size: IntSize
-){
-    companion object{
-        val Zero= GameLevelItemModel(
+    val size: IntSize = IntSize(100, 100)
+) {
+    companion object {
+        val Zero = GameLevelItemModel(
             background = Res.drawable.main_backgroud,
             droppedImage = Res.drawable.candy,
             intOffset = IntOffset.Zero,
-            size = IntSize.Zero
         )
     }
 }
+
+data class ItemListModel(
+    val drawableResource: DrawableResource,
+    val intOffset: IntOffset = IntOffset.Zero,
+    val size: IntSize = IntSize(100, 100)
+)

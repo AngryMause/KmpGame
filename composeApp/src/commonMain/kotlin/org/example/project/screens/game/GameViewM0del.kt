@@ -1,5 +1,6 @@
 package org.example.project.screens.game
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.ViewModel
@@ -28,22 +29,39 @@ class GameViewM0del(
         }
     }
 
+
+    init {
+        log.e { "GameViewM0del init" }
+    }
+
+    fun setTapOffset(offset: Offset) {
+        viewModelScope.launch(Dispatchers.Unconfined) {
+            gameRepository.setTapOffset(offset)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        log.e { "GameViewM0del onCleared" }
+    }
+
     fun setGameStatus(status: GameStatus) {
         viewModelScope.launch(Dispatchers.IO) {
             gameRepository.setGameStatus(status)
         }
     }
 
-    init {
-        timer.setTime(20)
-    }
-
-    fun createTimer(timer: (Long) -> Unit) {
+    fun restartGame() {
         viewModelScope.launch {
-            this@GameViewM0del.timer.getTime {
-                timer(it)
-            }
         }
     }
 
+    fun pauseDropped() {
+        viewModelScope.launch {
+        }
+    }
+
+    init {
+        timer.setTime(20)
+    }
 }

@@ -228,14 +228,15 @@ fun SettingSwitch(
             val thumbImage = if (checked) switchOn else switchOff
             val onOff = if (checked) imageOn else imageOff
             val onOffOffset = if (!checked) size.width / 2 - 10 else 10
-            val animatedElementSize = IntSize(size.width.toInt() / 2, (size.height.toInt()) - 20)
+            val height=(size.height.toInt()) - 20
+            val animatedElementSize = IntSize(size.width.toInt() / 2, height)
             drawImage(
                 image = backImage,
                 dstSize = IntSize(size.width.toInt(), size.height.toInt())
             )
             drawImage(
                 image = onOff,
-                dstSize = IntSize(size.width.toInt() / 2, (size.height.toInt()) - 20),
+                dstSize = IntSize(size.width.toInt() / 2, height ),
                 dstOffset = IntOffset(onOffOffset.toInt(), 10)
             )
             val thumbOffset = calculateThumbOffset(
@@ -246,7 +247,7 @@ fun SettingSwitch(
             drawImage(
                 image = thumbImage,
                 dstOffset = IntOffset(thumbOffset.toInt(), 10),
-                dstSize = IntSize(size.width.toInt() / 2 - 26, (size.height.toInt()) - 20)
+                dstSize = IntSize(size.width.toInt() / 2 - 26, height)
             )
         }
     }
