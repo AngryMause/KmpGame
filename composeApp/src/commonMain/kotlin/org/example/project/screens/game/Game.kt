@@ -23,17 +23,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -53,10 +46,9 @@ import firstkmpproject.composeapp.generated.resources.game_progress_bar_game
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.timer_background
 import firstkmpproject.composeapp.generated.resources.ultimate
-import kotlinx.coroutines.flow.StateFlow
-import org.example.project.data.local.LevelProgressState
+import org.example.project.data.local.state.GameStatus
+import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.GameLevelItemModel
-import org.example.project.repository.GameStatus.*
 import org.example.project.screens.elements.CustomProgressBar
 import org.example.project.screens.elements.GameOverAlert
 import org.example.project.screens.elements.LevelCompleteAlert
@@ -93,20 +85,21 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             gameProgress = gameTopBarModel.value.levelProgress.toFloat()
         )
         when (gameStatus.value) {
-            LOADING -> {
+            GameStatus.LOADING -> {
                 log.e { "LOADING" }
                 Icon(
                     Icons.Filled.PlayArrow,
                     contentDescription = null,
                     modifier = Modifier.size(40.dp).align(Alignment.Center)
                         .clickable {
-                            viewModel.setGameStatus(PLAYING)
+                            viewModel.startGame()
+                            viewModel.setGameStatus(GameStatus.PLAYING)
 
                         },
                 )
             }
 
-            PLAYING -> {
+            GameStatus.PLAYING -> {
                 log.i { "PLAYING" }
                 GameArea(
                     canvasModifier = Modifier
@@ -144,7 +137,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                 )
             }
 
-            GAME_OVER -> {
+            GameStatus.GAME_OVER -> {
                 log.e { "GAME_OVER" }
                 GameOverAlert(
                     modifier = Modifier.fillMaxSize(),
@@ -157,7 +150,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
 
             }
 
-            LEVEL_COMPLETE -> {
+            GameStatus.LEVEL_COMPLETE -> {
                 log.e { "LEVEL_COMPLETE" }
                 LevelCompleteAlert(
                     modifier = Modifier.fillMaxSize(),
@@ -173,8 +166,8 @@ fun GameScreen(onBack: () -> Unit, string: String) {
 
 @Composable
 fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
-    val imade = if (gameLevel.droppedImage != null) {
-        imageResource(gameLevel.droppedImage)
+    val imade = if (gameLevel.singleDroppedItemModel != null) {
+        imageResource(gameLevel.singleDroppedItemModel.drawableResource)
     } else {
         null
     }
@@ -206,8 +199,8 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
             imade != null -> {
                 drawImage(
                     image = imade,
-                    dstOffset = gameLevel.intOffset,
-                    dstSize = gameLevel.size
+                    dstOffset = gameLevel.singleDroppedItemModel!!.intOffset,
+                    dstSize = gameLevel.singleDroppedItemModel.size
                 )
             }
         }

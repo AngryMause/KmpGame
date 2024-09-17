@@ -1,4 +1,4 @@
-package org.example.project.data.local
+package org.example.project.data.local.state
 
 enum class LevelProgressState {
     NOT_COMPLETED,

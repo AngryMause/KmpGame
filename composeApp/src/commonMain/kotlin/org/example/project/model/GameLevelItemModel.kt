@@ -9,19 +9,21 @@ import org.jetbrains.compose.resources.DrawableResource
 
 data class GameLevelItemModel(
     val background: DrawableResource? = null,
-    val droppedImage: DrawableResource? = null,
     val itemList: List<ItemListModel> = emptyList(),
-    val intOffset: IntOffset,
-    val size: IntSize = IntSize(100, 100)
+    val singleDroppedItemModel: SingleDroppedItemModel? = null,
 ) {
     companion object {
         val Zero = GameLevelItemModel(
             background = Res.drawable.main_backgroud,
-            droppedImage = Res.drawable.candy,
-            intOffset = IntOffset.Zero,
         )
     }
 }
+
+data class SingleDroppedItemModel(
+    val drawableResource: DrawableResource,
+    val intOffset: IntOffset = IntOffset.Zero,
+    val size: IntSize = IntSize(100, 100)
+)
 
 data class ItemListModel(
     val drawableResource: DrawableResource,

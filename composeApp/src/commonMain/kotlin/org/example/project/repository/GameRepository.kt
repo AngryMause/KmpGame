@@ -11,18 +11,23 @@ import firstkmpproject.composeapp.generated.resources.ckake2
 import firstkmpproject.composeapp.generated.resources.level1
 import firstkmpproject.composeapp.generated.resources.level2
 import firstkmpproject.composeapp.generated.resources.red_candy2
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.example.project.data.local.state.GameLevelStatus
+import org.example.project.data.local.state.GameStatus
 import org.example.project.model.GameLevelItemModel
 import org.example.project.model.GameTopBarModel
 import org.example.project.model.ItemListModel
+import org.example.project.model.SingleDroppedItemModel
 import org.jetbrains.compose.resources.DrawableResource
 import org.lighthousegames.logging.logging
 
 
 class GameRepository {
     val log = logging("GameRepository")
-    private val _gameStatus = MutableStateFlow<GameStatus>(GameStatus.LOADING)
+
+    private val _gameStatus = MutableStateFlow(GameStatus.LOADING)
     val gameStatus = _gameStatus.asStateFlow()
     private val _gameTopBarModel = MutableStateFlow(GameTopBarModel("", 0f, 0))
     private val _gameLevel = MutableStateFlow(GameLevelItemModel.Zero)
@@ -51,36 +56,91 @@ class GameRepository {
         level: String,
         time: Int,
         levelBackground: DrawableResource? = null,
-        droppedImage: DrawableResource? = null,
-        droppedImageList: List<ItemListModel> = emptyList()
+        droppedImageList: List<ItemListModel> = emptyList(),
+        singleDroppedItemModel: SingleDroppedItemModel? = null,
     ) {
         _gameTopBarModel.emit(GameTopBarModel(level, levelTime = time))
         _gameLevel.emit(
             GameLevelItemModel(
                 background = levelBackground,
-                droppedImage = droppedImage,
                 itemList = droppedImageList,
-                intOffset = IntOffset.Zero,
+                singleDroppedItemModel = singleDroppedItemModel
             )
         )
     }
 
+    private var isUltimatePressed = false
+
     suspend fun udpateGame() {
-        when (gameStatus.value) {
-            GameStatus.PLAYING -> {
-                log.e { "udpateGame ${gameStatus.value}" }
+        log.e { "udpateGame ${gameStatus.value}" }
+        while (gameTopBarModel.value.levelTime >= 0 && !isUltimatePressed) {
+            delay(300)
+            updateItemDroppedList()
+            updateSingleDroppedItem()
+        }
+    }
+
+    private suspend fun updateSingleDroppedItem() {
+        if (gameLevel.value.singleDroppedItemModel == null) return
+        val singleDroppedItemModel = gameLevel.value.singleDroppedItemModel!!
+        if (singleDroppedItemModel.intOffset.y <= screenSize.height) {
+            val singleDroppedItem = singleDroppedItemModel.copy(
+                intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y + 10)
+            )
+            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+        } else {
+            val update = singleDroppedItemModel.intOffset.copy(
+                x = 300,
+                y = 100
+            )
+            _gameLevel.emit(
+                gameLevel.value.copy(
+                    singleDroppedItemModel = singleDroppedItemModel.copy(
+                        intOffset = update
+                    )
+                )
+            )
+        }
+    }
+
+
+    private suspend fun updateItemDroppedList() {
+        if (gameLevel.value.itemList.isEmpty()) return
+        val droppedItemModelList = gameLevel.value.itemList
+        droppedItemModelList.forEach { item ->
+            if (item.intOffset.y <= screenSize.height) {
+                val update = item.intOffset.copy(
+                    y = item.intOffset.y + 10
+                )
+                _gameLevel.emit(
+                    gameLevel.value.copy(
+                        itemList = droppedItemModelList.map {
+                            if (it == item) {
+                                return@map item.copy(intOffset = update)
+                            } else {
+                                return@map it
+                            }
+                        }
+                    )
+                )
+
+            } else {
+                val update = item.intOffset.copy(
+                    x = 300,
+                    y = 100
+                )
+                _gameLevel.emit(
+                    gameLevel.value.copy(
+                        itemList = droppedItemModelList.map {
+                            if (it == item) {
+                                return@map item.copy(intOffset = update)
+                            } else {
+                                return@map it
+                            }
+                        }
+                    )
+                )
             }
-
-
-            GameStatus.GAME_OVER -> {
-                log.e { "udpateGame ${gameStatus.value}" }
-            }
-
-            GameStatus.LEVEL_COMPLETE -> {
-                log.e { "udpateGame ${gameStatus.value}" }
-            }
-
-            else -> {}
         }
     }
 
@@ -91,7 +151,11 @@ class GameRepository {
                     level,
                     30,
                     Res.drawable.level1,
-                    Res.drawable.candy2,
+                    singleDroppedItemModel = SingleDroppedItemModel(
+                        Res.drawable.candy2,
+                        intOffset = IntOffset(100, 100),
+                        size = IntSize(100, 100),
+                    ),
                 )
                 log.e { "getGameLevel ${level}" }
             }
@@ -142,21 +206,3 @@ class GameRepository {
     }
 }
 
-enum class GameStatus {
-    LOADING,
-    PLAYING,
-    GAME_OVER,
-    LEVEL_COMPLETE
-}
-
-enum class GameLevelStatus(val levelName: String) {
-    LEVEL_0NE("1"),
-    LEVEL_TWO("2"),
-    LEVEL_THREE("3"),
-    LEVEL_FOUR("4"),
-    LEVEL_FIVE("5"),
-    LEVEL_SIX("6"),
-    LEVEL_SEVEN("7"),
-    LEVEL_EIGHT("8"),
-    LEVEL_NINE("9")
-}

@@ -7,22 +7,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.example.project.repository.GameLevelStatus
 import org.example.project.repository.GameRepository
-import org.example.project.repository.GameStatus
 import org.example.project.data.local.Timer
+import org.example.project.data.local.state.GameStatus
 import org.lighthousegames.logging.logging
 
 class GameViewM0del(
     private val gameRepository: GameRepository
 ) : ViewModel() {
     val log = logging("GameViewM0del")
-
-    val timer = Timer()
     val gameTopBarModel = gameRepository.gameTopBarModel
     val gameLevel = gameRepository.gameLevel
     val gameStatus = gameRepository.gameStatus
+    var gameJob: Job? = null
     fun initGame(screenSize: IntSize, gameStatus: String) {
         viewModelScope.launch {
             gameRepository.initGame(screenSize, gameStatus)
@@ -42,6 +41,7 @@ class GameViewM0del(
 
     override fun onCleared() {
         super.onCleared()
+        gameJob?.cancel()
         log.e { "GameViewM0del onCleared" }
     }
 
@@ -51,17 +51,20 @@ class GameViewM0del(
         }
     }
 
+    fun startGame() {
+        gameJob = viewModelScope.launch {
+            gameRepository.udpateGame()
+        }
+    }
+
     fun restartGame() {
         viewModelScope.launch {
+
         }
     }
 
     fun pauseDropped() {
         viewModelScope.launch {
         }
-    }
-
-    init {
-        timer.setTime(20)
     }
 }

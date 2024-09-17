@@ -1,7 +1,7 @@
 package org.example.project.model
 
-import org.example.project.data.local.LevelProgressState
-import org.example.project.repository.GameLevelStatus
+import org.example.project.data.local.state.GameLevelStatus
+import org.example.project.data.local.state.LevelProgressState
 
 data class MenuLevelModel(
     val levelName: GameLevelStatus,

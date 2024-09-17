@@ -47,7 +47,7 @@ import firstkmpproject.composeapp.generated.resources.star1
 import firstkmpproject.composeapp.generated.resources.star2
 import firstkmpproject.composeapp.generated.resources.star3
 import firstkmpproject.composeapp.generated.resources.win_frame
-import org.example.project.data.local.LevelProgressState
+import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.MenuLevelModel
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
