@@ -9,7 +9,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.example.project.data.local.state.GameStatus
-import org.example.project.repository.GameRepository
+import org.example.project.data.local.repository.GameRepository
 import org.lighthousegames.logging.logging
 
 class GameViewM0del(
@@ -57,9 +57,10 @@ class GameViewM0del(
         }
     }
 
+
     fun restartGame() {
         viewModelScope.launch {
-
+            gameRepository.reloadGame()
         }
     }
 

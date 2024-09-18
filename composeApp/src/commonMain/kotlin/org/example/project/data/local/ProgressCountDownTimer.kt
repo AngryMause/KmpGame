@@ -4,8 +4,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-private const val TIMER_COUNT=3
-private const val PROGRESS_TIME=100
+private const val TIMER_COUNT = 3
+private const val PROGRESS_TIME = 100
+
 data class ProgressCountDownTimerModel(
     val timer: Int = TIMER_COUNT,
     val isFinished: Boolean = true,
@@ -16,6 +17,8 @@ class ProgressCountDownTimer {
     private val _timer =
         MutableStateFlow(ProgressCountDownTimerModel())
     val timer = _timer.asStateFlow()
+    private var isReset = false
+
     suspend fun startTimer() {
         _timer.emit(timer.value.copy(isFinished = false))
         while (_timer.value.timer >= 0) {
@@ -34,5 +37,9 @@ class ProgressCountDownTimer {
             delay(100)
         }
         _timer.emit(timer.value.copy(timer = TIMER_COUNT))
+    }
+
+    suspend fun resetTimer() {
+        _timer.emit(ProgressCountDownTimerModel())
     }
 }

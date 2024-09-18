@@ -1,4 +1,4 @@
-package org.example.project.repository
+package org.example.project.data.local.repository
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
@@ -10,17 +10,13 @@ import firstkmpproject.composeapp.generated.resources.level1
 import firstkmpproject.composeapp.generated.resources.level2
 import firstkmpproject.composeapp.generated.resources.red_candy2
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.example.project.data.local.ProgressCountDownTimer
-import org.example.project.data.local.Timer
 import org.example.project.data.local.state.GameLevelStatus
 import org.example.project.data.local.state.GameStatus
 import org.example.project.model.GameLevelItemModel
@@ -33,7 +29,7 @@ import kotlin.random.Random
 
 
 class GameRepository(
-    val progressCountDownTimer: ProgressCountDownTimer,
+    private val progressCountDownTimer: ProgressCountDownTimer,
 ) {
     val log = logging("GameRepository")
 
@@ -46,7 +42,8 @@ class GameRepository(
     private val _tapOffset = MutableStateFlow(Offset.Zero)
     private var screenSize = IntSize.Zero
     private var delay = 50L
-
+    private var reloadGameItem: GameLevelItemModel = GameLevelItemModel.Zero
+    private var reloadToolbar: GameTopBarModel = GameTopBarModel("", 0f, 0)
     val isUltimatePressed = progressCountDownTimer.timer
     suspend fun initGame(screenSize: IntSize, gameLevel: String) {
         if (gameStatus.value == GameStatus.LOADING) {
@@ -76,27 +73,62 @@ class GameRepository(
         droppedImageList: List<ItemListModel> = emptyList(),
         singleDroppedItemModel: SingleDroppedItemModel? = null,
     ) {
-        _gameTopBarModel.emit(GameTopBarModel(level, levelTime = time))
-        _gameLevel.emit(
-            GameLevelItemModel(
-                background = levelBackground,
-                itemList = droppedImageList,
-                singleDroppedItemModel = singleDroppedItemModel
-            )
+        reloadToolbar = GameTopBarModel(level, levelTime = time)
+
+        reloadGameItem = GameLevelItemModel(
+            background = levelBackground,
+            itemList = droppedImageList,
+            singleDroppedItemModel = singleDroppedItemModel
         )
+        _gameLevel.emit(
+            reloadGameItem
+        )
+        _gameTopBarModel.emit(reloadToolbar)
     }
 
-
     suspend fun udpateGame() {
-        log.e { "udpateGame ${gameStatus.value}" }
-        while (gameTopBarModel.value.levelTime >= 0) {
-            delay(delay)
-            if (isUltimatePressed.first().isFinished) {
-                updateItemDroppedList()
-                updateSingleDroppedItem()
+        coroutineScope {
+            launch(Dispatchers.Default) {
+                while (gameTopBarModel.value.levelTime >= 0) {
+                    if (gameTopBarModel.value.levelTime == 0) {
+                        break
+                    }
+                    delay(delay)
+                    if (isUltimatePressed.first().isFinished) {
+                        updateItemDroppedList()
+                        updateSingleDroppedItem()
+                    }
+                }
+            }
+            launch(Dispatchers.Default) {
+                updateGameTimer()
             }
         }
     }
+
+    private suspend fun updateGameTimer() {
+        while (gameTopBarModel.value.levelTime >= 0) {
+            delay(1000)
+            val update = gameTopBarModel.value.levelTime - 1
+            _gameTopBarModel.emit(gameTopBarModel.value.copy(levelTime = update))
+            if (gameTopBarModel.value.levelTime == 0) {
+                _gameTopBarModel.emit(gameTopBarModel.value.copy(levelTime = 0))
+                setGameStatus(GameStatus.GAME_OVER)
+                break
+            }
+        }
+    }
+
+    suspend fun reloadGame() {
+        _gameLevel.emit(
+            reloadGameItem
+        )
+        _gameTopBarModel.emit(reloadToolbar)
+        setGameStatus(GameStatus.PLAYING)
+        udpateGame()
+        progressCountDownTimer.resetTimer()
+    }
+
 
     private suspend fun updateSingleDroppedItem() {
         if (gameLevel.value.singleDroppedItemModel == null) return
@@ -146,7 +178,7 @@ class GameRepository(
             GameLevelStatus.LEVEL_0NE.levelName -> {
                 setLevelItem(
                     level,
-                    30,
+                    4,
                     Res.drawable.level1,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
@@ -159,7 +191,7 @@ class GameRepository(
             GameLevelStatus.LEVEL_TWO.levelName -> {
                 setLevelItem(
                     level,
-                    40,
+                    10,
                     Res.drawable.level2,
                     droppedImageList = listOf(
                         ItemListModel(

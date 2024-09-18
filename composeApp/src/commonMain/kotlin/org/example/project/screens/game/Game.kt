@@ -27,13 +27,8 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -69,13 +64,10 @@ import org.lighthousegames.logging.logging
 @Composable
 fun GameScreen(onBack: () -> Unit, string: String) {
     val log = logging("GameScreen")
-
     val viewModel = koinViewModel<GameViewM0del>()
-
     val gameStatus = viewModel.gameStatus.collectAsState()
     val gameLevel = viewModel.gameLevel.collectAsState()
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
-//    var isUltimatePressed by remember { mutableStateOf(false) }
     val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
     LaunchedEffect(isUltimatePressed.value) {
         log.e { "isUltimatePressed ${isUltimatePressed.value}" }
@@ -104,7 +96,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                         .clickable {
                             viewModel.startGame()
                             viewModel.setGameStatus(GameStatus.PLAYING)
-
                         },
                 )
             }
