@@ -4,16 +4,22 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.candy
 import firstkmpproject.composeapp.generated.resources.candy2
-import firstkmpproject.composeapp.generated.resources.ckake
 import firstkmpproject.composeapp.generated.resources.ckake2
 import firstkmpproject.composeapp.generated.resources.level1
 import firstkmpproject.composeapp.generated.resources.level2
 import firstkmpproject.composeapp.generated.resources.red_candy2
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import org.example.project.data.local.Timer
 import org.example.project.data.local.state.GameLevelStatus
 import org.example.project.data.local.state.GameStatus
 import org.example.project.model.GameLevelItemModel
@@ -22,6 +28,7 @@ import org.example.project.model.ItemListModel
 import org.example.project.model.SingleDroppedItemModel
 import org.jetbrains.compose.resources.DrawableResource
 import org.lighthousegames.logging.logging
+import kotlin.random.Random
 
 
 class GameRepository {
@@ -35,7 +42,9 @@ class GameRepository {
     val gameTopBarModel = _gameTopBarModel.asStateFlow()
     private val _tapOffset = MutableStateFlow(Offset.Zero)
     private var screenSize = IntSize.Zero
-
+    private var delay = 50L
+    private val _isUltimatePressed = MutableStateFlow(false)
+    val isUltimatePressed = _isUltimatePressed.asStateFlow()
     suspend fun initGame(screenSize: IntSize, gameLevel: String) {
         if (gameStatus.value == GameStatus.LOADING) {
             this.screenSize = screenSize
@@ -47,6 +56,13 @@ class GameRepository {
         log.e { "setTapOffset $offset" }
         _tapOffset.emit(offset)
     }
+
+    suspend fun setUltimatePressed() {
+        _isUltimatePressed.emit(true)
+        delay(3000)
+        _isUltimatePressed.emit(false)
+    }
+
 
     suspend fun setGameStatus(status: GameStatus) {
         _gameStatus.emit(status)
@@ -69,14 +85,15 @@ class GameRepository {
         )
     }
 
-    private var isUltimatePressed = false
 
     suspend fun udpateGame() {
         log.e { "udpateGame ${gameStatus.value}" }
-        while (gameTopBarModel.value.levelTime >= 0 && !isUltimatePressed) {
-            delay(300)
-            updateItemDroppedList()
-            updateSingleDroppedItem()
+        while (gameTopBarModel.value.levelTime >= 0) {
+            delay(delay)
+            if (!isUltimatePressed.first()) {
+                updateItemDroppedList()
+                updateSingleDroppedItem()
+            }
         }
     }
 
@@ -103,45 +120,24 @@ class GameRepository {
         }
     }
 
-
     private suspend fun updateItemDroppedList() {
         if (gameLevel.value.itemList.isEmpty()) return
         val droppedItemModelList = gameLevel.value.itemList
-        droppedItemModelList.forEach { item ->
-            if (item.intOffset.y <= screenSize.height) {
-                val update = item.intOffset.copy(
-                    y = item.intOffset.y + 10
+        val test = droppedItemModelList.map { itemListModel ->
+            if (itemListModel.intOffset.y <= screenSize.height) {
+                val update = itemListModel.intOffset.copy(
+                    y = itemListModel.intOffset.y + 10
                 )
-                _gameLevel.emit(
-                    gameLevel.value.copy(
-                        itemList = droppedItemModelList.map {
-                            if (it == item) {
-                                return@map item.copy(intOffset = update)
-                            } else {
-                                return@map it
-                            }
-                        }
-                    )
-                )
-
+                return@map itemListModel.copy(intOffset = update)
             } else {
-                val update = item.intOffset.copy(
-                    x = 300,
-                    y = 100
+                val update = itemListModel.intOffset.copy(
+                    x = Random.nextInt(screenSize.width - (itemListModel.size.width + 20)),
+                    y = 300
                 )
-                _gameLevel.emit(
-                    gameLevel.value.copy(
-                        itemList = droppedItemModelList.map {
-                            if (it == item) {
-                                return@map item.copy(intOffset = update)
-                            } else {
-                                return@map it
-                            }
-                        }
-                    )
-                )
+                return@map itemListModel.copy(intOffset = update)
             }
         }
+        _gameLevel.emit(_gameLevel.value.copy(itemList = test))
     }
 
     private suspend fun getGameLevel(level: String) {
@@ -166,9 +162,18 @@ class GameRepository {
                     40,
                     Res.drawable.level2,
                     droppedImageList = listOf(
-                        ItemListModel(Res.drawable.ckake2, IntOffset(100, 100)),
-                        ItemListModel(Res.drawable.candy2, IntOffset(200, 200)),
-                        ItemListModel(Res.drawable.red_candy2, IntOffset(300, 300)),
+                        ItemListModel(
+                            Res.drawable.ckake2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                        ),
+                        ItemListModel(
+                            Res.drawable.candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                        ),
+                        ItemListModel(
+                            Res.drawable.red_candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                        ),
                     )
                 )
             }

@@ -3,7 +3,6 @@ package org.example.project.model
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.candy
 import firstkmpproject.composeapp.generated.resources.main_backgroud
 import org.jetbrains.compose.resources.DrawableResource
 

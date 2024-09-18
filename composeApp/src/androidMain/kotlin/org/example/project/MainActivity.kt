@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import org.example.project.di.initializeKoin
+import org.example.project.screens.game.GameScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
@@ -14,6 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         initializeKoin()
         setContent {
+
             App(
                 remember {
                     createDataStore(this)

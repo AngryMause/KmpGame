@@ -25,9 +25,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -69,7 +75,11 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     val gameStatus = viewModel.gameStatus.collectAsState()
     val gameLevel = viewModel.gameLevel.collectAsState()
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
-
+//    var isUltimatePressed by remember { mutableStateOf(false) }
+    val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
+    LaunchedEffect(isUltimatePressed.value){
+        log.e { "isUltimatePressed ${isUltimatePressed.value}" }
+    }
     Box(
         modifier = Modifier.fillMaxSize().onGloballyPositioned {
             viewModel.initGame(it.size, string)
@@ -82,7 +92,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f).padding(20.dp),
             time = gameTopBarModel.value.levelTime,
             levelName = gameTopBarModel.value.levelName,
-            gameProgress = gameTopBarModel.value.levelProgress.toFloat()
+            gameProgress = gameTopBarModel.value.levelProgress
         )
         when (gameStatus.value) {
             GameStatus.LOADING -> {
@@ -131,7 +141,10 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                     painter = painterResource(Res.drawable.ultimate),
                     contentDescription = null,
                     modifier = Modifier.padding(30.dp).size(40.dp).align(Alignment.BottomEnd)
-                        .clickable {
+                        .alpha(if (!isUltimatePressed.value) 1f else 0.5f)
+                        .clickable(
+                            enabled = !isUltimatePressed.value,
+                        ) {
                             viewModel.pauseDropped()
                         },
                 )
