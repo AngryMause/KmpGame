@@ -13,7 +13,7 @@ import org.example.project.repository.GameRepository
 import org.lighthousegames.logging.logging
 
 class GameViewM0del(
-    private val gameRepository: GameRepository
+    private val gameRepository: GameRepository,
 ) : ViewModel() {
     val log = logging("GameViewM0del")
     val gameTopBarModel = gameRepository.gameTopBarModel

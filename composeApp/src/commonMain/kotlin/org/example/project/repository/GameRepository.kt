@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.example.project.data.local.ProgressCountDownTimer
 import org.example.project.data.local.Timer
 import org.example.project.data.local.state.GameLevelStatus
 import org.example.project.data.local.state.GameStatus
@@ -31,7 +32,9 @@ import org.lighthousegames.logging.logging
 import kotlin.random.Random
 
 
-class GameRepository {
+class GameRepository(
+    val progressCountDownTimer: ProgressCountDownTimer,
+) {
     val log = logging("GameRepository")
 
     private val _gameStatus = MutableStateFlow(GameStatus.LOADING)
@@ -43,8 +46,8 @@ class GameRepository {
     private val _tapOffset = MutableStateFlow(Offset.Zero)
     private var screenSize = IntSize.Zero
     private var delay = 50L
-    private val _isUltimatePressed = MutableStateFlow(false)
-    val isUltimatePressed = _isUltimatePressed.asStateFlow()
+
+    val isUltimatePressed = progressCountDownTimer.timer
     suspend fun initGame(screenSize: IntSize, gameLevel: String) {
         if (gameStatus.value == GameStatus.LOADING) {
             this.screenSize = screenSize
@@ -58,9 +61,7 @@ class GameRepository {
     }
 
     suspend fun setUltimatePressed() {
-        _isUltimatePressed.emit(true)
-        delay(3000)
-        _isUltimatePressed.emit(false)
+        progressCountDownTimer.startTimer()
     }
 
 
@@ -90,7 +91,7 @@ class GameRepository {
         log.e { "udpateGame ${gameStatus.value}" }
         while (gameTopBarModel.value.levelTime >= 0) {
             delay(delay)
-            if (!isUltimatePressed.first()) {
+            if (isUltimatePressed.first().isFinished) {
                 updateItemDroppedList()
                 updateSingleDroppedItem()
             }
@@ -153,7 +154,6 @@ class GameRepository {
                         size = IntSize(100, 100),
                     ),
                 )
-                log.e { "getGameLevel ${level}" }
             }
 
             GameLevelStatus.LEVEL_TWO.levelName -> {

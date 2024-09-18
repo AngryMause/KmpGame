@@ -77,7 +77,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
 //    var isUltimatePressed by remember { mutableStateOf(false) }
     val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
-    LaunchedEffect(isUltimatePressed.value){
+    LaunchedEffect(isUltimatePressed.value) {
         log.e { "isUltimatePressed ${isUltimatePressed.value}" }
     }
     Box(
@@ -141,9 +141,12 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                     painter = painterResource(Res.drawable.ultimate),
                     contentDescription = null,
                     modifier = Modifier.padding(30.dp).size(40.dp).align(Alignment.BottomEnd)
-                        .alpha(if (!isUltimatePressed.value) 1f else 0.5f)
+                        .graphicsLayer {
+                            alpha =
+                                if (!isUltimatePressed.value.isFinished || isUltimatePressed.value.progress <= 0.3f) 0.3f else isUltimatePressed.value.progress
+                        }
                         .clickable(
-                            enabled = !isUltimatePressed.value,
+                            enabled = isUltimatePressed.value.isFinished && isUltimatePressed.value.progress == 1f,
                         ) {
                             viewModel.pauseDropped()
                         },
@@ -151,7 +154,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             }
 
             GameStatus.GAME_OVER -> {
-                log.e { "GAME_OVER" }
                 GameOverAlert(
                     modifier = Modifier.fillMaxSize(),
                     onClick = {
@@ -160,11 +162,9 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                         viewModel.restartGame()
                     }
                 )
-
             }
 
             GameStatus.LEVEL_COMPLETE -> {
-                log.e { "LEVEL_COMPLETE" }
                 LevelCompleteAlert(
                     modifier = Modifier.fillMaxSize(),
                     levelProgress = LevelProgressState.ONE_STAR,
