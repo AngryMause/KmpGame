@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -25,11 +26,16 @@ import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.MenuLevelModel
 import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.lighthousegames.logging.logging
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
     val log = logging("SplashScreen")
+    val viewModel = koinViewModel<MenuGameViewModel>()
+    val gemeLevelList = viewModel.gameLevelList.collectAsState()
     Box {
         Column(
             modifier = Modifier.fillMaxSize().paint(
@@ -44,11 +50,11 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
                     .align(Alignment.CenterHorizontally)
             )
             LazyRow(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
-                items(gemeLevelList.size) { index ->
+                items(gemeLevelList.value.size) { index ->
                     LevelBox(
                         modifier = Modifier.padding(10.dp),
-                        gemeLevelList[index],
-                        onClick = { onGameStar(gemeLevelList[index].levelName.levelName) }
+                        gemeLevelList.value[index],
+                        onClick = { onGameStar(gemeLevelList.value[index].levelName.levelName) }
                     )
                 }
             }
@@ -60,53 +66,3 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
                 .clickable { onSettingsOpen() })
     }
 }
-
-private val gemeLevelList = listOf(
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_0NE,
-        isLevelUnlocked = true,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_TWO,
-        isLevelUnlocked = true,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_THREE,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_FOUR,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_FIVE,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_SIX,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_SEVEN,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_EIGHT,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-    MenuLevelModel(
-        GameLevelStatus.LEVEL_NINE,
-        isLevelUnlocked = false,
-        levelProgress = LevelProgressState.NOT_COMPLETED
-    ),
-)
-
-

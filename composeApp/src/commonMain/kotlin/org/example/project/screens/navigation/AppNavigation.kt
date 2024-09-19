@@ -9,7 +9,8 @@ import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame
 import org.example.project.screens.splash.SplashScreen
 
-private const val PLANET_NAME="planetName"
+private const val PLANET_NAME = "planetName"
+
 @Composable
 fun AppNavigation() {
     val navHost = rememberNavController()
@@ -22,21 +23,21 @@ fun AppNavigation() {
             SplashScreen(openMenu = {
                 navHost.navigate(ScreenRoute.MENU.name)
                 {
-                    popUpTo(ScreenRoute.SPLASH.name){
+                    popUpTo(ScreenRoute.SPLASH.name) {
                         inclusive = true
                     }
                 }
             })
         }
         // Menu
-        composable(ScreenRoute.MENU.name) { backStackEntry->
-            MenuGame(onGameStar = {planetName->
+        composable(ScreenRoute.MENU.name) { backStackEntry ->
+            MenuGame(onGameStar = { planetName ->
                 navHost.navigate("${ScreenRoute.GAME.name}/$planetName")
             }, onSettingsOpen = { navHost.navigate(ScreenRoute.SETTING.name) })
         }
         // Game
-        composable("${ScreenRoute.GAME.name}/{$PLANET_NAME}") { backStackEntry->
-            val str= backStackEntry.arguments?.getString(PLANET_NAME)?: "1"
+        composable("${ScreenRoute.GAME.name}/{$PLANET_NAME}") { backStackEntry ->
+            val str = backStackEntry.arguments?.getString(PLANET_NAME)
             str?.let {
                 GameScreen(
                     onBack = {

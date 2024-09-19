@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,11 +65,15 @@ import firstkmpproject.composeapp.generated.resources.switch_on
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun SettingScreen(onBack: () -> Unit) {
-    val viewModel = remember { SettingViewModel() }
+    val viewModel = koinViewModel<SettingViewModel>()
     var checked by remember { mutableStateOf(false) }
+    val levelList = viewModel.mainBackGround.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize()
             .paint(
@@ -91,7 +96,7 @@ fun SettingScreen(onBack: () -> Unit) {
         Column(
             Modifier.fillMaxWidth().wrapContentSize().align(Alignment.BottomCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp,Alignment.CenterVertically)
+            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -113,14 +118,14 @@ fun SettingScreen(onBack: () -> Unit) {
                 )
             }
             Backgrounds(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f)
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f), levelList = levelList.value
             )
         }
     }
 }
 
 @Composable
-fun Backgrounds(modifier: Modifier = Modifier) {
+fun Backgrounds(modifier: Modifier = Modifier, levelList: List<BackgroundsUnlockedModel>) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -139,8 +144,8 @@ fun Backgrounds(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxSize().padding(10.dp)
         ) {
-            items(backList.size) { index ->
-                val model = backList[index]
+            items(levelList.size) { index ->
+                val model = levelList[index]
                 BackgroundsUnlockedItem(
                     modifier = Modifier.align(Alignment.Center).matchParentSize(), model
                 )
@@ -155,7 +160,7 @@ fun BackgroundsUnlockedItem(modifier: Modifier = Modifier, model: BackgroundsUnl
         modifier = modifier.padding(4.dp)
     ) {
         Image(
-            painter = painterResource(model.background),
+            painter = painterResource(requireNotNull(model.background)),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.align(Alignment.Center).size(width = 140.dp, height = 250.dp)
@@ -176,28 +181,14 @@ fun BackgroundsUnlockedItem(modifier: Modifier = Modifier, model: BackgroundsUnl
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.size(40.dp).align(Alignment.Center),
             )
-
         }
     }
 }
 
 
-val backList = listOf(
-    BackgroundsUnlockedModel(Res.drawable.main_backgroud, true),
-    BackgroundsUnlockedModel(Res.drawable.level1, false),
-    BackgroundsUnlockedModel(Res.drawable.level2, false),
-    BackgroundsUnlockedModel(Res.drawable.level4, false),
-    BackgroundsUnlockedModel(Res.drawable.level3, false),
-    BackgroundsUnlockedModel(Res.drawable.level5, false),
-    BackgroundsUnlockedModel(Res.drawable.level6, false),
-    BackgroundsUnlockedModel(Res.drawable.level7, false),
-    BackgroundsUnlockedModel(Res.drawable.level8, false),
-    BackgroundsUnlockedModel(Res.drawable.level9, false),
-)
-
 data class BackgroundsUnlockedModel(
-    val background: DrawableResource,
-    val isUnlocked: Boolean
+    val background: DrawableResource? = null,
+    val isUnlocked: Boolean = false
 )
 
 @Composable
@@ -228,7 +219,7 @@ fun SettingSwitch(
             val thumbImage = if (checked) switchOn else switchOff
             val onOff = if (checked) imageOn else imageOff
             val onOffOffset = if (!checked) size.width / 2 - 10 else 10
-            val height=(size.height.toInt()) - 20
+            val height = (size.height.toInt()) - 20
             val animatedElementSize = IntSize(size.width.toInt() / 2, height)
             drawImage(
                 image = backImage,
@@ -236,7 +227,7 @@ fun SettingSwitch(
             )
             drawImage(
                 image = onOff,
-                dstSize = IntSize(size.width.toInt() / 2, height ),
+                dstSize = IntSize(size.width.toInt() / 2, height),
                 dstOffset = IntOffset(onOffOffset.toInt(), 10)
             )
             val thumbOffset = calculateThumbOffset(

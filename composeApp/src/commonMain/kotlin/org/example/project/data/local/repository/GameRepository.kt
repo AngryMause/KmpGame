@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.example.project.data.local.OnTapEvent
+import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.ProgressCountDownTimer
 import org.example.project.data.local.state.GameLevelStatus
 import org.example.project.data.local.state.GameStatus
@@ -27,9 +29,11 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.lighthousegames.logging.logging
 import kotlin.random.Random
 
+private const val SIZE = 100
 
 class GameRepository(
     private val progressCountDownTimer: ProgressCountDownTimer,
+    private val onTapEvent: OnTapEvent
 ) {
     val log = logging("GameRepository")
 
@@ -39,7 +43,7 @@ class GameRepository(
     private val _gameLevel = MutableStateFlow(GameLevelItemModel.Zero)
     val gameLevel = _gameLevel.asStateFlow()
     val gameTopBarModel = _gameTopBarModel.asStateFlow()
-    private val _tapOffset = MutableStateFlow(Offset.Zero)
+    private val _tapOffset = onTapEvent.onTapEvent
     private var screenSize = IntSize.Zero
     private var delay = 50L
     private var reloadGameItem: GameLevelItemModel = GameLevelItemModel.Zero
@@ -52,9 +56,9 @@ class GameRepository(
         }
     }
 
-    suspend fun setTapOffset(offset: Offset) {
-        log.e { "setTapOffset $offset" }
-        _tapOffset.emit(offset)
+    fun setTapOffset(onTapEventModel: OnTapEventModel) {
+        log.e { "setTapOffset $onTapEventModel drop item ${gameLevel.value.singleDroppedItemModel?.intOffset}" }
+        onTapEvent.setOnTapEvent(onTapEventModel)
     }
 
     suspend fun setUltimatePressed() {
@@ -100,9 +104,9 @@ class GameRepository(
                     }
                 }
             }
-            launch(Dispatchers.Default) {
-                updateGameTimer()
-            }
+//            launch(Dispatchers.Default) {
+//                updateGameTimer()
+//            }
         }
     }
 
@@ -133,25 +137,53 @@ class GameRepository(
     private suspend fun updateSingleDroppedItem() {
         if (gameLevel.value.singleDroppedItemModel == null) return
         val singleDroppedItemModel = gameLevel.value.singleDroppedItemModel!!
+
         if (singleDroppedItemModel.intOffset.y <= screenSize.height) {
-            val singleDroppedItem = singleDroppedItemModel.copy(
-                intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y + 10)
-            )
-            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+            updateItemByLongPress(singleDroppedItemModel)
         } else {
             val update = singleDroppedItemModel.intOffset.copy(
-                x = 300,
-                y = 100
+                x = Random.nextInt(screenSize.width - (singleDroppedItemModel.size.width + 20)),
+                y = 400
             )
             _gameLevel.emit(
                 gameLevel.value.copy(
                     singleDroppedItemModel = singleDroppedItemModel.copy(
-                        intOffset = update
+                        intOffset = update,
+                        size = IntSize(SIZE, SIZE)
                     )
                 )
             )
         }
     }
+
+    private suspend fun updateItemByLongPress(singleDroppedItemModel: SingleDroppedItemModel) {
+        val itemOffset = singleDroppedItemModel.intOffset
+        val itemSize = singleDroppedItemModel.size
+        val tapOffset = _tapOffset.value.offset
+        if (tapOffset.x >= itemOffset.x && tapOffset.x <= itemOffset.x + itemSize.width &&
+            tapOffset.y >= itemOffset.y && tapOffset.y <= itemOffset.y + itemSize.height.toFloat()
+        ) {
+            if (_tapOffset.value.isLongPress) {
+                val singleDroppedItem = singleDroppedItemModel.copy(
+                    size = IntSize(
+                        width = singleDroppedItemModel.size.width + 3,
+                        height = singleDroppedItemModel.size.height + 3
+                    )
+                )
+                _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+            }
+        } else {
+            val singleDroppedItem = singleDroppedItemModel.copy(
+                intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y + 10)
+            )
+            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+        }
+    }
+
+    private suspend fun moveUp() {
+
+    }
+
 
     private suspend fun updateItemDroppedList() {
         if (gameLevel.value.itemList.isEmpty()) return
@@ -173,17 +205,21 @@ class GameRepository(
         _gameLevel.emit(_gameLevel.value.copy(itemList = test))
     }
 
+
     private suspend fun getGameLevel(level: String) {
         return when (level) {
             GameLevelStatus.LEVEL_0NE.levelName -> {
                 setLevelItem(
                     level,
-                    4,
+                    10,
                     Res.drawable.level1,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
-                        intOffset = IntOffset(100, 100),
-                        size = IntSize(100, 100),
+                        intOffset = IntOffset(
+                            Random.nextInt(screenSize.width - (120)),
+                            300
+                        ),
+                        size = IntSize(SIZE, SIZE),
                     ),
                 )
             }

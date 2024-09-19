@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
@@ -47,6 +48,7 @@ import firstkmpproject.composeapp.generated.resources.game_progress_bar_game
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.timer_background
 import firstkmpproject.composeapp.generated.resources.ultimate
+import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.state.GameStatus
 import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.GameLevelItemModel
@@ -88,7 +90,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
         )
         when (gameStatus.value) {
             GameStatus.LOADING -> {
-                log.e { "LOADING" }
                 Icon(
                     Icons.Filled.PlayArrow,
                     contentDescription = null,
@@ -101,29 +102,32 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             }
 
             GameStatus.PLAYING -> {
-                log.i { "PLAYING" }
                 GameArea(
                     canvasModifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
-                            log.e { "pointerInput " }
                             detectTapGestures(
                                 onPress = { onPressOffset ->
+                                    viewModel.setTapOffset(
+                                        OnTapEventModel(
+                                            isOnTap = true,
+                                            offset = onPressOffset
+                                        )
+                                    )
                                     detectDragGesturesAfterLongPress(
                                         onDrag = { tt, dragAmount ->
+
                                         },
                                         onDragEnd = {
                                             log.e { "onDragEnd" }
+                                            viewModel.setTapOffset(OnTapEventModel(isLongPress = false, offset = Offset.Zero))
                                         }
                                     )
-                                    log.e { "onPress ${onPressOffset}" }
                                 },
-                                onTap = { ofset ->
-                                    viewModel.setTapOffset(ofset)
-                                    log.e { "onTap ${ofset}" }
-                                },
-                                onLongPress = {
-                                    log.e { "onLongPress ${it}" }
+
+                                onLongPress = { ofset->
+                                    log.e { "onLongPress" }
+                                    viewModel.setTapOffset(OnTapEventModel(isLongPress = true, offset = ofset))
                                 }
                             )
                         }, gameLevel = gameLevel.value

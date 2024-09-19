@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.state.GameStatus
 import org.example.project.data.local.repository.GameRepository
 import org.lighthousegames.logging.logging
@@ -31,8 +32,7 @@ class GameViewM0del(
     init {
         log.e { "GameViewM0del init" }
     }
-
-    fun setTapOffset(offset: Offset) {
+    fun setTapOffset(offset: OnTapEventModel) {
         viewModelScope.launch(Dispatchers.Unconfined) {
             gameRepository.setTapOffset(offset)
         }
