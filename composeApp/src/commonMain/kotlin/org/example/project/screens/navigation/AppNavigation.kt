@@ -9,8 +9,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.main_backgroud
 import org.example.project.screens.setting.SettingScreen
 import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame

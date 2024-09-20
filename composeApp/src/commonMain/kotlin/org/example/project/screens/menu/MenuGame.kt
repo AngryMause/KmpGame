@@ -14,16 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.main_backgroud
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.settings_button
-import org.example.project.data.local.state.GameLevelStatus
-import org.example.project.data.local.state.LevelProgressState
-import org.example.project.model.MenuLevelModel
 import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel

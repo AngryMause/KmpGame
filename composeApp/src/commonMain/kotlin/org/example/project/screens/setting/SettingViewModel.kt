@@ -1,6 +1,5 @@
 package org.example.project.screens.setting
 
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import firstkmpproject.composeapp.generated.resources.Res
@@ -21,7 +20,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.example.project.data.local.local.coreComponent
 import org.example.project.screens.navigation.Background
-import org.jetbrains.compose.resources.DrawableResource
 import org.lighthousegames.logging.logging
 
 class SettingViewModel

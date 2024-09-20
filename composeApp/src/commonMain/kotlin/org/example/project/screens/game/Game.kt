@@ -25,7 +25,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +49,6 @@ import firstkmpproject.composeapp.generated.resources.timer_background
 import firstkmpproject.composeapp.generated.resources.ultimate
 import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.state.GameStatus
-import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.GameLevelItemModel
 import org.example.project.screens.elements.CustomProgressBar
 import org.example.project.screens.elements.GameOverAlert

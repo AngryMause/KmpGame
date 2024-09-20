@@ -1,6 +1,5 @@
 package org.example.project.screens.game
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

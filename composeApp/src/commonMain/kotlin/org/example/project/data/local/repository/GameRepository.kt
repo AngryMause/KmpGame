@@ -1,6 +1,5 @@
 package org.example.project.data.local.repository
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import firstkmpproject.composeapp.generated.resources.Res
