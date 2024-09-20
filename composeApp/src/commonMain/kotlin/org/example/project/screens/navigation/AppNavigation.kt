@@ -1,20 +1,38 @@
 package org.example.project.screens.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import firstkmpproject.composeapp.generated.resources.Res
+import firstkmpproject.composeapp.generated.resources.main_backgroud
 import org.example.project.screens.setting.SettingScreen
 import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame
 import org.example.project.screens.splash.SplashScreen
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
 private const val PLANET_NAME = "planetName"
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun AppNavigation() {
     val navHost = rememberNavController()
+    val viewModel = koinViewModel<AppViewModel>()
+    val imageResource = viewModel.mainScreen.collectAsState()
     NavHost(
+        modifier = Modifier.fillMaxSize()
+            .paint(
+                painter = painterResource(imageResource.value),
+                contentScale = ContentScale.FillBounds
+            ),
         navController = navHost,
         startDestination = ScreenRoute.MENU.name
     ) {

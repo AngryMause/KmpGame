@@ -38,10 +38,7 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
     val gemeLevelList = viewModel.gameLevelList.collectAsState()
     Box {
         Column(
-            modifier = Modifier.fillMaxSize().paint(
-                painterResource(Res.drawable.main_backgroud),
-                contentScale = ContentScale.FillBounds
-            )
+            modifier = Modifier.fillMaxSize()
         ) {
             Image(
                 painterResource(Res.drawable.pers),

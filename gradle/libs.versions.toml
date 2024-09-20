@@ -11,17 +11,19 @@ junit = "4.13.2"
  koinCompose = "1.1.5"
  koinComposeViewModel = "1.2.0-Beta4"
 kotlin = "2.0.20"
+kotlinxSerializationJson = "1.7.3"
 logging = "1.5.0"
 navigationCompose = "2.7.0-alpha07"
 media3Common = "1.4.1"
 #uiGeometryJvmstubs = "1.7.1"
  datastore = "1.1.1"
-
+ androidx-startup = "1.2.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -32,6 +34,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeViewModel" }
 #androidx-ui-geometry-jvmstubs = { group = "androidx.compose.ui", name = "ui-geometry-jvmstubs", version.ref = "uiGeometryJvmstubs" }
+androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

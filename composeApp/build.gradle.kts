@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    kotlin("plugin.serialization") version "2.0.20"
 }
 
 kotlin {
@@ -31,6 +32,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
+            api(libs.androidx.startup)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
@@ -54,6 +56,8 @@ kotlin {
             api(compose.components.resources)
             api(libs.datastore.preferences)
             api(libs.datastore)
+
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
@@ -95,5 +99,6 @@ android {
 }
 dependencies {
     implementation(libs.androidx.media3.common)
+    implementation(libs.kotlinx.serialization.json)
 }
 

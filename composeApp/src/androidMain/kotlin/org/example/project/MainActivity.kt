@@ -1,9 +1,9 @@
 package org.example.project
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.remember
 import org.example.project.di.initializeKoin
 
 class MainActivity : ComponentActivity() {
@@ -11,11 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         initializeKoin()
         setContent {
-
             App(
-                remember {
-                    createDataStore(this)
-                }
             )
         }
     }

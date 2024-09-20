@@ -21,23 +21,19 @@ class GameViewM0del(
     val gameLevel = gameRepository.gameLevel
     val gameStatus = gameRepository.gameStatus
     val isUltimatePressed = gameRepository.isUltimatePressed
-    var gameJob: Job? = null
+    private var gameJob: Job? = null
+
     fun initGame(screenSize: IntSize, gameStatus: String) {
         viewModelScope.launch {
             gameRepository.initGame(screenSize, gameStatus)
         }
     }
 
-
-    init {
-        log.e { "GameViewM0del init" }
-    }
     fun setTapOffset(offset: OnTapEventModel) {
         viewModelScope.launch(Dispatchers.Unconfined) {
             gameRepository.setTapOffset(offset)
         }
     }
-
 
     override fun onCleared() {
         super.onCleared()
@@ -57,9 +53,15 @@ class GameViewM0del(
         }
     }
 
+    fun stopGame() {
+        if (gameJob?.isActive == true) {
+            gameJob?.cancel()
+        }
+    }
 
     fun restartGame() {
         viewModelScope.launch {
+            gameJob?.start()
             gameRepository.reloadGame()
         }
     }

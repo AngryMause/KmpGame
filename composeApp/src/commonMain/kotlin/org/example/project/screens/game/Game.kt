@@ -71,9 +71,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     val gameLevel = viewModel.gameLevel.collectAsState()
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
     val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
-    LaunchedEffect(isUltimatePressed.value) {
-        log.e { "isUltimatePressed ${isUltimatePressed.value}" }
-    }
     Box(
         modifier = Modifier.fillMaxSize().onGloballyPositioned {
             viewModel.initGame(it.size, string)
@@ -89,19 +86,19 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             gameProgress = gameTopBarModel.value.levelProgress
         )
         when (gameStatus.value) {
-            GameStatus.LOADING -> {
+            GameStatus.Loading -> {
                 Icon(
                     Icons.Filled.PlayArrow,
                     contentDescription = null,
                     modifier = Modifier.size(40.dp).align(Alignment.Center)
                         .clickable {
                             viewModel.startGame()
-                            viewModel.setGameStatus(GameStatus.PLAYING)
+                            viewModel.setGameStatus(GameStatus.Playing)
                         },
                 )
             }
 
-            GameStatus.PLAYING -> {
+            GameStatus.Playing -> {
                 GameArea(
                     canvasModifier = Modifier
                         .fillMaxSize()
@@ -120,14 +117,24 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                                         },
                                         onDragEnd = {
                                             log.e { "onDragEnd" }
-                                            viewModel.setTapOffset(OnTapEventModel(isLongPress = false, offset = Offset.Zero))
+                                            viewModel.setTapOffset(
+                                                OnTapEventModel(
+                                                    isLongPress = false,
+                                                    offset = Offset.Zero
+                                                )
+                                            )
                                         }
                                     )
                                 },
 
-                                onLongPress = { ofset->
+                                onLongPress = { ofset ->
                                     log.e { "onLongPress" }
-                                    viewModel.setTapOffset(OnTapEventModel(isLongPress = true, offset = ofset))
+                                    viewModel.setTapOffset(
+                                        OnTapEventModel(
+                                            isLongPress = true,
+                                            offset = ofset
+                                        )
+                                    )
                                 }
                             )
                         }, gameLevel = gameLevel.value
@@ -148,7 +155,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                 )
             }
 
-            GameStatus.GAME_OVER -> {
+            is GameStatus.GameOver -> {
                 GameOverAlert(
                     modifier = Modifier.fillMaxSize(),
                     onClick = {
@@ -159,10 +166,11 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                 )
             }
 
-            GameStatus.LEVEL_COMPLETE -> {
+            is GameStatus.LevelCompleted -> {
+                viewModel.stopGame()
                 LevelCompleteAlert(
                     modifier = Modifier.fillMaxSize(),
-                    levelProgress = LevelProgressState.ONE_STAR,
+                    levelProgress = (gameStatus.value as GameStatus.LevelCompleted).level,
                     onClick = {
                         onBack()
                     }
@@ -207,7 +215,8 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
             imade != null -> {
                 drawImage(
                     image = imade,
-                    dstOffset = gameLevel.singleDroppedItemModel!!.intOffset,
+                    alpha = gameLevel.singleDroppedItemModel!!.alpha,
+                    dstOffset = gameLevel.singleDroppedItemModel.intOffset,
                     dstSize = gameLevel.singleDroppedItemModel.size
                 )
             }
@@ -261,6 +270,7 @@ fun GameTopBar(modifier: Modifier, time: Int, levelName: String, gameProgress: F
                     .paint(painterResource(Res.drawable.timer_background))
                     .padding(top = 14.dp, start = 20.dp)
             )
+
             Image(
                 painter = painterResource(Res.drawable.pers),
                 contentScale = ContentScale.FillBounds,
@@ -270,6 +280,7 @@ fun GameTopBar(modifier: Modifier, time: Int, levelName: String, gameProgress: F
                 }
             )
         }
+
         CustomProgressBar(
             Modifier.fillMaxWidth(),
             gameProgress,

@@ -8,10 +8,12 @@ import org.example.project.screens.navigation.AppNavigation
 
 @Composable
 fun App(
-    dataStore: DataStore<Preferences>
+//    dataStore: DataStore<Preferences>
 ) {
 
     MaterialTheme {
         AppNavigation()
     }
 }
+
+

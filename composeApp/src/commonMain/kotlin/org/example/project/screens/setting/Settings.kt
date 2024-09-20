@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,19 +68,21 @@ import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.lighthousegames.logging.logging
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun SettingScreen(onBack: () -> Unit) {
     val viewModel = koinViewModel<SettingViewModel>()
+    val log = logging("SettingScreen")
+    val isSoundEnabled = viewModel.isSoundEnabled.collectAsState()
     var checked by remember { mutableStateOf(false) }
     val levelList = viewModel.mainBackGround.collectAsState()
+    LaunchedEffect(isSoundEnabled.value) {
+        checked = isSoundEnabled.value
+    }
     Box(
         modifier = Modifier.fillMaxSize()
-            .paint(
-                painter = painterResource(Res.drawable.main_backgroud),
-                contentScale = ContentScale.FillBounds
-            )
     ) {
         Image(painter = painterResource(Res.drawable.back_arrow),
             contentDescription = "Back",
@@ -113,19 +116,30 @@ fun SettingScreen(onBack: () -> Unit) {
                 Spacer(Modifier.weight(1f))
                 SettingSwitch(
                     checked = checked,
-                    onCheckedChange = { checked = it },
+                    onCheckedChange = {
+                        checked = it
+                        viewModel.saveSoundEnabled(it)
+                    },
                     modifier = Modifier.size(width = 51.dp, height = 31.dp)
                 )
             }
             Backgrounds(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f), levelList = levelList.value
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f),
+                levelList = levelList.value,
+                onBackChoisen = { background ->
+                    viewModel.saveNewBackGroundImage(background)
+                }
             )
         }
     }
 }
 
 @Composable
-fun Backgrounds(modifier: Modifier = Modifier, levelList: List<BackgroundsUnlockedModel>) {
+fun Backgrounds(
+    modifier: Modifier = Modifier,
+    levelList: List<BackgroundsUnlockedModel>,
+    onBackChoisen: (Int) -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -147,15 +161,21 @@ fun Backgrounds(modifier: Modifier = Modifier, levelList: List<BackgroundsUnlock
             items(levelList.size) { index ->
                 val model = levelList[index]
                 BackgroundsUnlockedItem(
-                    modifier = Modifier.align(Alignment.Center).matchParentSize(), model
-                )
+                    modifier = Modifier.align(Alignment.Center).matchParentSize()
+                        .clickable(enabled = levelList.get(index).isUnlocked) { onBackChoisen(index) },
+                    model,
+
+                    )
             }
         }
     }
 }
 
 @Composable
-fun BackgroundsUnlockedItem(modifier: Modifier = Modifier, model: BackgroundsUnlockedModel) {
+fun BackgroundsUnlockedItem(
+    modifier: Modifier = Modifier,
+    model: BackgroundsUnlockedModel,
+) {
     Box(
         modifier = modifier.padding(4.dp)
     ) {

@@ -1,9 +1,9 @@
 package org.example.project.data.local.state
 
-enum class GameStatus {
-    LOADING,
-    PLAYING,
-    GAME_OVER,
-    LEVEL_COMPLETE
+sealed class GameStatus {
+    data object Loading : GameStatus()
+    data object Playing : GameStatus()
+    data object GameOver : GameStatus()
+    data class LevelCompleted(val level: LevelProgressState) : GameStatus()
 }
 
