@@ -16,7 +16,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -35,7 +35,6 @@ kotlin {
             api(libs.androidx.startup)
             implementation(libs.androidx.activity.compose)
             implementation("androidx.media3:media3-exoplayer:1.4.1")
-//            implementation("androidx.media3:media3-ui:1.0.0")
         }
         commonMain.dependencies {
             implementation(libs.navigation.compose)

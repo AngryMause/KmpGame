@@ -4,7 +4,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
@@ -23,7 +27,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.lighthousegames.logging.logging
 
 private const val PLANET_NAME = "planetName"
-private val log= logging("AppNavigation")
+private val log = logging("AppNavigation")
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
@@ -31,19 +35,17 @@ fun AppNavigation() {
     val navHost = rememberNavController()
     val viewModel = koinViewModel<AppViewModel>()
     val imageResource = viewModel.mainScreen.collectAsState()
-
+    val player by remember { mutableStateOf(audioPlayer()) }
     DisposableEffect(true) {
         onDispose {
-            log.e {  "AppNavigation: DisposableEffect"}
+            log.e { "AppNavigation: DisposableEffect" }
             audioPlayer().release()
         }
     }
-    LaunchedEffect(true) {
-        log.e {  "AppNavigation: LaunchedEffect"}
-        val sounds = audioPlayer()
-        sounds.playSound(3)
 
-//    audioPlayer().playSound(3)
+    LaunchedEffect(true) {
+        log.e { "AppNavigation: LaunchedEffect" }
+        player.playSound(3)
     }
     NavHost(
         modifier = Modifier.fillMaxSize()
