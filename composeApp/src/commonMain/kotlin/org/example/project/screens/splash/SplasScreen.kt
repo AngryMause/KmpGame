@@ -30,12 +30,16 @@ import firstkmpproject.composeapp.generated.resources.splash_image
 import org.example.project.screens.elements.CustomProgressBar
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.lighthousegames.logging.logging
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun SplashScreen(openMenu: () -> Unit) {
     val log = logging("SplashScreen")
     var enabled by remember { mutableStateOf(false) }
+    val viewModel = koinViewModel<SplashViewModel>()
     val alpha: Float by animateFloatAsState(
         targetValue = if (enabled) 1f else 0f,
         animationSpec = tween(durationMillis = 3000, easing = LinearOutSlowInEasing),

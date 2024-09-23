@@ -57,7 +57,6 @@ fun LevelCompleteAlert(modifier: Modifier, levelProgress: LevelProgressState, on
     Box(
         modifier = modifier.fillMaxSize().background(Color.Unspecified.copy(alpha = 0.6f))
     ) {
-
         Image(
             painter = painterResource(Res.drawable.shine_background),
             contentDescription = null,
@@ -72,7 +71,6 @@ fun LevelCompleteAlert(modifier: Modifier, levelProgress: LevelProgressState, on
                 painter = painterResource(Res.drawable.level_complete),
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(0.25f).padding(top = 50.dp)
-
             )
             StarProgressRow(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f).padding(5.dp),
@@ -82,8 +80,7 @@ fun LevelCompleteAlert(modifier: Modifier, levelProgress: LevelProgressState, on
             Image(
                 painter = painterResource(Res.drawable.home_button),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
-                    .clip(RoundedCornerShape(20.dp)).size(80.dp)
-                    .clickable() { onClick() },
+                    .clip(RoundedCornerShape(20.dp)).size(80.dp).clickable() { onClick() },
                 contentDescription = null
             )
         }
@@ -92,18 +89,12 @@ fun LevelCompleteAlert(modifier: Modifier, levelProgress: LevelProgressState, on
 
 @Composable
 fun LevelBox(
-    modifier: Modifier,
-    gameLevelModel: MenuLevelModel,
-    onClick: () -> Unit
+    modifier: Modifier, gameLevelModel: MenuLevelModel, onClick: () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .paint(
-                painter = painterResource(if (gameLevelModel.isLevelUnlocked) Res.drawable.menu_level else Res.drawable.level_locked),
-                contentScale = ContentScale.FillBounds
-            )
-            .clickable { onClick() }
-    ) {
+    Box(modifier = modifier.paint(
+        painter = painterResource( Res.drawable.menu_level ),
+        contentScale = ContentScale.FillBounds
+    ).clickable(enabled = gameLevelModel.isLevelUnlocked) { onClick() }) {
         if (gameLevelModel.isLevelUnlocked) {
             Text(
                 text = gameLevelModel.levelName.levelName,
@@ -119,15 +110,13 @@ fun LevelBox(
                     .fillMaxHeight(0.2f).padding(bottom = 10.dp)
             )
         }
-
     }
 }
 
 @Composable
 fun getTypography(): Typography {
     val font = org.jetbrains.compose.resources.Font(
-        Res.font.jomhuria_regular, weight = FontWeight.Bold,
-        style = FontStyle.Normal
+        Res.font.jomhuria_regular, weight = FontWeight.Bold, style = FontStyle.Normal
     )
 
     val jomhuria_regular = FontFamily(
@@ -138,8 +127,7 @@ fun getTypography(): Typography {
             fontFamily = jomhuria_regular,
             fontSize = 38.sp,
             fontWeight = FontWeight.Bold,
-        ),
-        body1 = TextStyle(
+        ), body1 = TextStyle(
             fontFamily = jomhuria_regular,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
@@ -178,15 +166,13 @@ fun GameOverAlert(modifier: Modifier, onClick: () -> Unit, reload: () -> Unit) {
             ) {
                 Image(
                     painter = painterResource(Res.drawable.home_button),
-                    modifier = Modifier.size(80.dp)
-                        .clip(RoundedCornerShape(20.dp))
+                    modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp))
                         .clickable() { onClick() },
                     contentDescription = null
                 )
                 Image(
                     painter = painterResource(Res.drawable.reload_game),
-                    modifier = Modifier.size(80.dp)
-                        .clip(RoundedCornerShape(20.dp))
+                    modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp))
                         .clickable() { reload() },
                     contentDescription = null
                 )
@@ -226,15 +212,14 @@ fun CustomProgressBar(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LinearProgressIndicator(
-                progress = progress,
-                color = Color.Yellow,
-                modifier = Modifier.fillMaxWidth().paint(
-                    painterResource(background),
-                    contentScale = ContentScale.FillBounds
+                progress = progress, color = Color.Yellow, modifier = Modifier.fillMaxWidth().paint(
+                    painterResource(background), contentScale = ContentScale.FillBounds
                 ).padding(12.dp)
             )
-            if (isShowLoading)
-                Image(painter = painterResource(Res.drawable.loading), contentDescription = null)
+            if (isShowLoading) Image(
+                painter = painterResource(Res.drawable.loading),
+                contentDescription = null
+            )
         }
     }
 }

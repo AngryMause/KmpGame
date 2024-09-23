@@ -7,6 +7,7 @@ import org.example.project.screens.game.GameViewM0del
 import org.example.project.screens.menu.MenuGameViewModel
 import org.example.project.screens.navigation.AppViewModel
 import org.example.project.screens.setting.SettingViewModel
+import org.example.project.screens.splash.SplashViewModel
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -19,6 +20,7 @@ val appModule = module {
     viewModel { SettingViewModel() }
     viewModel { MenuGameViewModel() }
     viewModel { AppViewModel() }
+    viewModel { SplashViewModel() }
 }
 
 fun initializeKoin() {

@@ -14,10 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import firstkmpproject.composeapp.generated.resources.Res
+import firstkmpproject.composeapp.generated.resources.level_locked
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.settings_button
+import org.example.project.data.local.state.LevelProgressState
 import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -29,7 +32,7 @@ import org.lighthousegames.logging.logging
 fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
     val log = logging("SplashScreen")
     val viewModel = koinViewModel<MenuGameViewModel>()
-    val gemeLevelList = viewModel.gameLevelList.collectAsState()
+    val gameLevelList = viewModel.gameLevelList.collectAsState()
     Box {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -41,12 +44,25 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
                     .align(Alignment.CenterHorizontally)
             )
             LazyRow(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
-                items(gemeLevelList.value.size) { index ->
-                    LevelBox(
-                        modifier = Modifier.padding(10.dp),
-                        gemeLevelList.value[index],
-                        onClick = { onGameStar(gemeLevelList.value[index].levelName.levelName) }
-                    )
+                items(gameLevelList.value.size) { index ->
+                    val levelList = gameLevelList.value[index]
+                    log.e { "MenuGame: $levelList" }
+                    if (levelList.isLevelUnlocked) {
+                        LevelBox(
+                            modifier = Modifier.padding(10.dp),
+                            gameLevelModel = levelList,
+                            onClick = {
+                                onGameStar(gameLevelList.value[index].levelName.levelName)
+                            }
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(Res.drawable.level_locked),
+                            contentScale = ContentScale.FillBounds,
+                            contentDescription = null,
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
             }
         }

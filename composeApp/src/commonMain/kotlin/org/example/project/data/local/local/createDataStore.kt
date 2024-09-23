@@ -11,15 +11,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import okio.Path.Companion.toPath
 
-//fun createDataStore(producePath: () -> String): DataStore<Preferences> {
-//    return PreferenceDataStoreFactory.createWithPath(
-//        produceFile = { producePath().toPath() }
-//    )
-//}
-//
-//internal const val DATA_STORE_FILE_NAME = "prefs.preferences_pb"
-//
-//
 
 expect fun dataStorePreferences(
     corruptionHandler: ReplaceFileCorruptionHandler<Preferences>?,

@@ -36,16 +36,10 @@ fun AppNavigation() {
     val viewModel = koinViewModel<AppViewModel>()
     val imageResource = viewModel.mainScreen.collectAsState()
     val player by remember { mutableStateOf(audioPlayer()) }
-    DisposableEffect(true) {
-        onDispose {
-            log.e { "AppNavigation: DisposableEffect" }
-            audioPlayer().release()
-        }
-    }
 
     LaunchedEffect(true) {
         log.e { "AppNavigation: LaunchedEffect" }
-        player.playSound(3)
+//        player.playSound(3)
     }
     NavHost(
         modifier = Modifier.fillMaxSize()
