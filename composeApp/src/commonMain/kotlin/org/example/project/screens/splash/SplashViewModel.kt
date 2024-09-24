@@ -16,7 +16,7 @@ class SplashViewModel : ViewModel() {
         cheListData()
     }
 
-    fun cheListData() {
+    private fun cheListData() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = coreComponent.appPreferences.getLevelList()
             if (list.isEmpty()) {

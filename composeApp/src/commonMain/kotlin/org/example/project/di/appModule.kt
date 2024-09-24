@@ -23,8 +23,3 @@ val appModule = module {
     viewModel { SplashViewModel() }
 }
 
-fun initializeKoin() {
-    startKoin {
-        modules(appModule)
-    }
-}

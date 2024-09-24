@@ -18,6 +18,5 @@ internal class CoreComponentImpl internal constructor() : CoreComponent,
         coroutineScope = applicationScope + Dispatchers.IO,
         migrations = emptyList()
     )
-
     override val appPreferences : AppPreferences = AppPreferencesImpl(dataStore)
 }

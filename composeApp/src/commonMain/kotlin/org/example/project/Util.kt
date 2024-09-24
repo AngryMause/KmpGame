@@ -8,23 +8,3 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-//private val cache: MutableMap<String, Font> = mutableMapOf()
-//@OptIn(ExperimentalResourceApi::class)
-//@Composable
-//actual fun font(
-//    name: String,
-//    res: String,
-//    weight: FontWeight,
-//    style: FontStyle
-//): Font {
-//    return cache.getOrPut(res) {
-//        val byteArray = runBlocking {
-//            resource("font/$res.ttf").readBytes()
-//        }
-//        Font(res, byteArray, weight, style)
-//    }
-//}
-//
-//fun resource(s: String): Any {
-//    TODO("Not yet implemented")
-//}

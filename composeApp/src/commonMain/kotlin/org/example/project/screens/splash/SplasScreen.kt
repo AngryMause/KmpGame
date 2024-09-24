@@ -42,7 +42,7 @@ fun SplashScreen(openMenu: () -> Unit) {
     val viewModel = koinViewModel<SplashViewModel>()
     val alpha: Float by animateFloatAsState(
         targetValue = if (enabled) 1f else 0f,
-        animationSpec = tween(durationMillis = 3000, easing = LinearOutSlowInEasing),
+        animationSpec = tween(durationMillis = 10000, easing = LinearOutSlowInEasing),
         label = "alpha",
         finishedListener = {
             openMenu()

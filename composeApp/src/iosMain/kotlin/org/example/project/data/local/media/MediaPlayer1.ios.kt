@@ -1,30 +1,28 @@
 package org.example.project.data.local.media
 
+import firstkmpproject.composeapp.generated.resources.Res
+
+
+import kotlinx.cinterop.ExperimentalForeignApi
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import platform.AVFAudio.AVAudioPlayer
+import platform.Foundation.NSURL
+
 actual fun audioPlayer(): AundioPlayer = AudioPlayerImpl()
 
-//package org.example.project.data.local.media
-//
-//import <...>.composeapp.generated.resources.Res
-//import io.github.aakira.napier.log
-//import kotlinx.cinterop.ExperimentalForeignApi
-//import org.jetbrains.compose.resources.ExperimentalResourceApi
-//import platform.AVFAudio.AVAudioPlayer
-//import platform.Foundation.NSURL
-//
-//@OptIn(ExperimentalResourceApi::class)
+@OptIn(ExperimentalResourceApi::class)
 class AudioPlayerImpl : AundioPlayer {
-    //    private val mediaItems = soundResList.map { path ->
-//        val uri = Res.getUri(path)
-//        NSURL.URLWithString(URLString = uri)
-//    }
-//
-//    @OptIn(ExperimentalForeignApi::class)
+
+    @OptIn(ExperimentalForeignApi::class, ExperimentalResourceApi::class)
     override fun playSound(id: Int) {
-//        val avAudioPlayer = AVAudioPlayer(mediaItems[id]!!, error = null)
-//        avAudioPlayer.prepareToPlay()
-//        avAudioPlayer.play()
+        val uri = Res.getUri("files/some_song.mp3")
+        val mediaItems = NSURL.URLWithString(URLString = uri)
+        val avAudioPlayer = AVAudioPlayer(mediaItems!!, error = null)
+        avAudioPlayer.prepareToPlay()
+        avAudioPlayer.play()
     }
 
-    //
-    override fun release() {}
+    override fun release() {
+
+    }
 }

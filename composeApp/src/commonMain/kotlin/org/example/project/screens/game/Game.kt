@@ -114,7 +114,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
 
                                         },
                                         onDragEnd = {
-                                            log.e { "onDragEnd" }
                                             viewModel.setTapOffset(
                                                 OnTapEventModel(
                                                     isLongPress = false,
@@ -126,7 +125,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                                 },
 
                                 onLongPress = { ofset ->
-                                    log.e { "onLongPress" }
                                     viewModel.setTapOffset(
                                         OnTapEventModel(
                                             isLongPress = true,

@@ -7,7 +7,6 @@ import org.example.project.screens.navigation.AppNavigation
 @Composable
 fun App(
 ) {
-
     MaterialTheme {
         AppNavigation()
     }

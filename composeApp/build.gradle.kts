@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    kotlin("plugin.serialization") version "2.0.20"
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -14,6 +14,13 @@ kotlin {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+        }
+    }
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("co.touchlab:stately-common:1.2.0") // Replace with the latest version
+            }
         }
     }
 
@@ -25,6 +32,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbinary=bundleId=org.example.project")
+
         }
     }
 

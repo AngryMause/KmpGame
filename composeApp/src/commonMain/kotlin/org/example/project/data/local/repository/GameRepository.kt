@@ -38,7 +38,6 @@ class GameRepository(
     private val onTapEvent: OnTapEvent
 ) {
     val log = logging("GameRepository")
-
     private val _gameStatus = MutableStateFlow<GameStatus>(GameStatus.Loading)
     val gameStatus = _gameStatus.asStateFlow()
     private val _gameTopBarModel = MutableStateFlow(GameTopBarModel("", 0f, 0))

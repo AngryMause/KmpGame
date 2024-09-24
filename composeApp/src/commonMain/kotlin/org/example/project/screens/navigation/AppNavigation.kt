@@ -39,7 +39,7 @@ fun AppNavigation() {
 
     LaunchedEffect(true) {
         log.e { "AppNavigation: LaunchedEffect" }
-//        player.playSound(3)
+        player.playSound(3)
     }
     NavHost(
         modifier = Modifier.fillMaxSize()
@@ -48,7 +48,7 @@ fun AppNavigation() {
                 contentScale = ContentScale.FillBounds
             ),
         navController = navHost,
-        startDestination = ScreenRoute.MENU.name
+        startDestination = ScreenRoute.SPLASH.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {
