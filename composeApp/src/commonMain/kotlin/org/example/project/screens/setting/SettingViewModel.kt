@@ -35,6 +35,11 @@ class SettingViewModel
     val mainBackGround = _mainBackGround.asStateFlow()
     private val localData = coreComponent.appPreferences
 
+    init {
+        getBackGroundImage()
+        toggleSound()
+    }
+
     private fun toggleSound() {
         viewModelScope.launch {
             val isSoundEnabled = localData.isSoundEnabled()
@@ -53,34 +58,33 @@ class SettingViewModel
         viewModelScope.launch {
             val data = Background(imageUrl)
             val json = Json.encodeToString(data)
-            log.e { "json: $json" }
             coreComponent.appPreferences.saveNewBackGroundImage(json)
         }
     }
 
     private fun getBackGroundImage() {
         viewModelScope.launch(Dispatchers.IO) {
-            val levelList = localData.getLevelList()
-//            val newList = mutableListOf<BackgroundsUnlockedModel>()
-//            for (i in backList().indices) {
-//                backList()[i].isUnlocked =
-//                    if (levelList[i].levelProgress == LevelProgressState.TWO_STARS || levelList[i].levelProgress == LevelProgressState.THREE_STARS) true else false
-//            }
-            log.e { "newList: $levelList" }
-            _mainBackGround.emit(backList())
-
+            _mainBackGround.emit(convertListWithUnlocked())
         }
     }
 
-    init {
-        getBackGroundImage()
-        toggleSound()
+    private suspend fun convertListWithUnlocked(): List<BackgroundsUnlockedModel> {
+        val levelList = localData.getLevelList()
+        val newList = mutableListOf<BackgroundsUnlockedModel>()
+        backList().mapIndexed() { index, background ->
+            newList.add(
+                background.copy(
+                    isUnlocked = if (index == 0) true else levelList[index - 1].levelProgress == LevelProgressState.TWO_STARS || levelList[index - 1].levelProgress == LevelProgressState.THREE_STARS
+                )
+            )
+        }
+        return newList
     }
 }
 
 fun backList() = listOf(
     BackgroundsUnlockedModel(Res.drawable.main_backgroud, true),
-    BackgroundsUnlockedModel(Res.drawable.level1, true),
+    BackgroundsUnlockedModel(Res.drawable.level1, false),
     BackgroundsUnlockedModel(Res.drawable.level2, true),
     BackgroundsUnlockedModel(Res.drawable.level4, false),
     BackgroundsUnlockedModel(Res.drawable.level3, false),

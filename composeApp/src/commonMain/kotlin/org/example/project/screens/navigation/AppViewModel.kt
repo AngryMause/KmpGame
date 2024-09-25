@@ -21,8 +21,6 @@ import org.lighthousegames.logging.logging
 data class Background(
     val back: Int
 )
-
-
 class AppViewModel(
 ) : ViewModel() {
     val log = logging("AppViewModel")
@@ -31,7 +29,7 @@ class AppViewModel(
     private val audioPlayer = AudioPlayerComponent.audioPlayer
     private val localData = coreComponent.appPreferences
     fun playSound(id: Int ) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
             localData.isSoundEnabled().collectLatest { isEnabled ->
                 if (isEnabled) {
                     audioPlayer.playMainSound(id)
@@ -43,7 +41,6 @@ class AppViewModel(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             coreComponent.appPreferences.getBackGroundImage.collect { background ->
-                log.e { "background: $background" }
                 if (background.isNotEmpty()) {
                     val back = fromJson(background)
                     _mainScreen.value = backList()[back.back].background!!

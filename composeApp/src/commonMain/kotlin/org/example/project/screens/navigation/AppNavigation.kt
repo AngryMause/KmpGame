@@ -41,7 +41,7 @@ fun AppNavigation() {
                 contentScale = ContentScale.FillBounds
             ),
         navController = navHost,
-        startDestination = ScreenRoute.SPLASH.name
+        startDestination = ScreenRoute.SETTING.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {
