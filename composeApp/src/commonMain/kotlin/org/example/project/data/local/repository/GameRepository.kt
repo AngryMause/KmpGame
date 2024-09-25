@@ -106,27 +106,30 @@ class GameRepository(
                     }
                 }
             }
-//            launch(Dispatchers.Default) {
-//                updateGameTimer()
-//            }
+            launch(Dispatchers.Default) {
+                updateGameTimer()
+            }
         }
     }
 
     private suspend fun checkGameStatus() {
         when {
-            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress >= 0.3f -> setGameStatus(
-                GameStatus.LevelCompleted(LevelProgressState.NOT_COMPLETED)
-            )
+            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress <= 0.3f -> {
+                log.e { "checkGameStatus ${gameTopBarModel.value.levelProgress}" }
+                setGameStatus(
+                    GameStatus.LevelCompleted(LevelProgressState.NOT_COMPLETED)
+                )
+            }
 
-            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress <= 0.3f -> setGameStatus(
+            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress >= 0.3f -> setGameStatus(
                 GameStatus.LevelCompleted(LevelProgressState.ONE_STAR)
             )
 
-            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress <= 0.66f -> setGameStatus(
+            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress >= 0.66f -> setGameStatus(
                 GameStatus.LevelCompleted(LevelProgressState.TWO_STARS)
             )
 
-            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress <= 0.98f -> setGameStatus(
+            gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress >= 0.98f -> setGameStatus(
                 GameStatus.LevelCompleted(LevelProgressState.THREE_STARS)
             )
 
@@ -272,7 +275,7 @@ class GameRepository(
             GameLevelStatus.LEVEL_0NE.levelName -> {
                 setLevelItem(
                     level,
-                    10,
+                    13,
                     Res.drawable.level1,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
@@ -288,7 +291,7 @@ class GameRepository(
             GameLevelStatus.LEVEL_TWO.levelName -> {
                 setLevelItem(
                     level,
-                    10,
+                    13,
                     Res.drawable.level2,
                     droppedImageList = listOf(
                         ItemListModel(
@@ -308,31 +311,135 @@ class GameRepository(
             }
 
             GameLevelStatus.LEVEL_THREE.levelName -> {
-                log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level1,
+                    singleDroppedItemModel = SingleDroppedItemModel(
+                        Res.drawable.candy2,
+                        intOffset = IntOffset(
+                            Random.nextInt(screenSize.width - (120)),
+                            SCREEN_START_POSITION
+                        ),
+                        size = IntSize(SIZE, SIZE),
+                    ),
+                )
             }
 
             GameLevelStatus.LEVEL_FOUR.levelName -> {
                 log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level1,
+                    singleDroppedItemModel = SingleDroppedItemModel(
+                        Res.drawable.candy2,
+                        intOffset = IntOffset(
+                            Random.nextInt(screenSize.width - (120)),
+                            SCREEN_START_POSITION
+                        ),
+                        size = IntSize(SIZE, SIZE),
+                    ),
+                )
             }
 
             GameLevelStatus.LEVEL_FIVE.levelName -> {
-                log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level1,
+                    singleDroppedItemModel = SingleDroppedItemModel(
+                        Res.drawable.candy2,
+                        intOffset = IntOffset(
+                            Random.nextInt(screenSize.width - (120)),
+                            SCREEN_START_POSITION
+                        ),
+                        size = IntSize(SIZE, SIZE),
+                    ),
+                )
             }
 
             GameLevelStatus.LEVEL_SIX.levelName -> {
-                log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level2,
+                    droppedImageList = listOf(
+                        ItemListModel(
+                            Res.drawable.ckake2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                        ),
+                        ItemListModel(
+                            Res.drawable.candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                        ),
+                        ItemListModel(
+                            Res.drawable.red_candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                        ),
+                    )
+                )
             }
 
             GameLevelStatus.LEVEL_SEVEN.levelName -> {
-                log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level2,
+                    droppedImageList = listOf(
+                        ItemListModel(
+                            Res.drawable.ckake2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                        ),
+                        ItemListModel(
+                            Res.drawable.candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                        ),
+                        ItemListModel(
+                            Res.drawable.red_candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                        ),
+                    )
+                )
             }
 
             GameLevelStatus.LEVEL_EIGHT.levelName -> {
-                log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level2,
+                    droppedImageList = listOf(
+                        ItemListModel(
+                            Res.drawable.ckake2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                        ),
+                        ItemListModel(
+                            Res.drawable.candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                        ),
+                        ItemListModel(
+                            Res.drawable.red_candy2,
+                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                        ),
+                    )
+                )
             }
 
             GameLevelStatus.LEVEL_NINE.levelName -> {
                 log.e { "getGameLevel ${level}" }
+                setLevelItem(
+                    level,
+                    13,
+                    Res.drawable.level1,
+                    singleDroppedItemModel = SingleDroppedItemModel(
+                        Res.drawable.candy2,
+                        intOffset = IntOffset(
+                            Random.nextInt(screenSize.width - (120)),
+                            SCREEN_START_POSITION
+                        ),
+                        size = IntSize(SIZE, SIZE),
+                    ),
+                )
             }
 
             else -> {}

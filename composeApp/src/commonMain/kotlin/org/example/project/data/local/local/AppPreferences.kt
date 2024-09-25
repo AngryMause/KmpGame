@@ -14,7 +14,7 @@ import org.example.project.model.MenuLevelModel
 import org.lighthousegames.logging.logging
 
 interface AppPreferences {
-    suspend fun isSoundEnabled(): Boolean
+    suspend fun isSoundEnabled(): Flow<Boolean>
     suspend fun changeSoundEnabled(isEnabled: Boolean): Preferences
     suspend fun saveNewBackGroundImage(imageUrl: String)
     val getBackGroundImage: Flow<String>
@@ -37,8 +37,8 @@ internal class AppPreferencesImpl(
     private val levelList = stringPreferencesKey(PREFS_TAG_KEY + LEVEL_LIST)
 
     override suspend fun isSoundEnabled() = dataStore.data.map { preferences ->
-        preferences[darkModeKey] ?: false
-    }.first()
+        preferences[darkModeKey] ?: true
+    }
 
     override suspend fun changeSoundEnabled(isEnabled: Boolean) = dataStore.edit { preferences ->
         preferences[darkModeKey] = isEnabled

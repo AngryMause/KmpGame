@@ -198,7 +198,7 @@ fun BackgroundsUnlockedItem(
 
 data class BackgroundsUnlockedModel(
     val background: DrawableResource? = null,
-    val isUnlocked: Boolean = false
+    var isUnlocked: Boolean = false
 )
 
 @Composable

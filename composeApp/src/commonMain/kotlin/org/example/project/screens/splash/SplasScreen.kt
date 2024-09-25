@@ -5,11 +5,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,16 +17,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.loading
 import firstkmpproject.composeapp.generated.resources.main_backgroud
 import firstkmpproject.composeapp.generated.resources.progressbar_background
 import firstkmpproject.composeapp.generated.resources.splash_image
 import org.example.project.screens.elements.CustomProgressBar
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -42,7 +37,7 @@ fun SplashScreen(openMenu: () -> Unit) {
     val viewModel = koinViewModel<SplashViewModel>()
     val alpha: Float by animateFloatAsState(
         targetValue = if (enabled) 1f else 0f,
-        animationSpec = tween(durationMillis = 10000, easing = LinearOutSlowInEasing),
+        animationSpec = tween(durationMillis = 2000, easing = LinearOutSlowInEasing),
         label = "alpha",
         finishedListener = {
             openMenu()

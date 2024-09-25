@@ -9,7 +9,6 @@ import org.example.project.screens.navigation.AppViewModel
 import org.example.project.screens.setting.SettingViewModel
 import org.example.project.screens.splash.SplashViewModel
 import org.koin.compose.viewmodel.dsl.viewModel
-import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
 val appModule = module {

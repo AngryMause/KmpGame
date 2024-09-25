@@ -60,6 +60,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.lighthousegames.logging.logging
 
+
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun GameScreen(onBack: () -> Unit, string: String) {
@@ -69,6 +70,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     val gameLevel = viewModel.gameLevel.collectAsState()
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
     val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
+
     Box(
         modifier = Modifier.fillMaxSize().onGloballyPositioned {
             viewModel.initGame(it.size, string)
@@ -164,6 +166,11 @@ fun GameScreen(onBack: () -> Unit, string: String) {
 
             is GameStatus.LevelCompleted -> {
                 viewModel.stopGame()
+                viewModel.playSound()
+                viewModel.saveLevelRecords(
+                    string,
+                    (gameStatus.value as GameStatus.LevelCompleted).level
+                )
                 LevelCompleteAlert(
                     modifier = Modifier.fillMaxSize(),
                     levelProgress = (gameStatus.value as GameStatus.LevelCompleted).level,

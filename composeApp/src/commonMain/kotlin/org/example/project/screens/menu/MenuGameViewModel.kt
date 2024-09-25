@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.project.data.local.local.coreComponent
-import org.example.project.data.local.state.GameLevelStatus
 import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.MenuLevelModel
 import org.lighthousegames.logging.logging
@@ -19,13 +18,13 @@ class MenuGameViewModel : ViewModel() {
     val gameLevelList = _gameLevelList.asStateFlow()
     val log = logging("MenuGameViewModel")
 
-    init {
+    fun getUnlockedLevelList() {
         viewModelScope.launch(Dispatchers.IO) {
-//            val list = coreComponent.appPreferences.getLevelList()
-            _gameLevelList.value = checkIsLevelUnlocked()
+            val list = coreComponent.appPreferences.getLevelList()
+//            _gameLevelList.value = checkIsLevelUnlocked()
+            _gameLevelList.value = list
         }
     }
-
 
     private suspend fun checkIsLevelUnlocked(): List<MenuLevelModel> {
         val list = coreComponent.appPreferences.getLevelList()

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +21,6 @@ import firstkmpproject.composeapp.generated.resources.Res
 import firstkmpproject.composeapp.generated.resources.level_locked
 import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.settings_button
-import org.example.project.data.local.state.LevelProgressState
 import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -33,6 +33,10 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
     val log = logging("SplashScreen")
     val viewModel = koinViewModel<MenuGameViewModel>()
     val gameLevelList = viewModel.gameLevelList.collectAsState()
+    LaunchedEffect(null) {
+        log.e { "MenuGame: LaunchedEffect" }
+        viewModel.getUnlockedLevelList()
+    }
     Box {
         Column(
             modifier = Modifier.fillMaxSize()

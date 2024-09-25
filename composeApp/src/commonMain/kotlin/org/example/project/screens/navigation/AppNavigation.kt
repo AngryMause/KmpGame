@@ -2,24 +2,17 @@ package org.example.project.screens.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.Dispatchers
-import org.example.project.data.local.media.audioPlayer
-import org.example.project.screens.setting.SettingScreen
 import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame
+import org.example.project.screens.setting.SettingScreen
 import org.example.project.screens.splash.SplashScreen
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -29,17 +22,17 @@ import org.lighthousegames.logging.logging
 private const val PLANET_NAME = "planetName"
 private val log = logging("AppNavigation")
 
+private const val APP_SOUND = 1
+
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun AppNavigation() {
     val navHost = rememberNavController()
     val viewModel = koinViewModel<AppViewModel>()
     val imageResource = viewModel.mainScreen.collectAsState()
-    val player by remember { mutableStateOf(audioPlayer()) }
 
     LaunchedEffect(true) {
-        log.e { "AppNavigation: LaunchedEffect" }
-        player.playSound(3)
+        viewModel.playSound(APP_SOUND)
     }
     NavHost(
         modifier = Modifier.fillMaxSize()
