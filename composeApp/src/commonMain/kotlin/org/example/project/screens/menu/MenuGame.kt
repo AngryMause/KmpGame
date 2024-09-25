@@ -1,5 +1,11 @@
 package org.example.project.screens.menu
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import firstkmpproject.composeapp.generated.resources.Res
@@ -37,6 +44,14 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
         log.e { "MenuGame: LaunchedEffect" }
         viewModel.getUnlockedLevelList()
     }
+    val persAnimation = rememberInfiniteTransition().animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(6000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
     Box {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -45,7 +60,9 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
                 painterResource(Res.drawable.pers),
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)
-                    .align(Alignment.CenterHorizontally)
+                    .align(Alignment.CenterHorizontally).graphicsLayer {
+                        rotationZ = persAnimation.value * 23
+                    }
             )
             LazyRow(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
                 items(gameLevelList.value.size) { index ->
