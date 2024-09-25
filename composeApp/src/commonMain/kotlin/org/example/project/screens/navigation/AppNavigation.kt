@@ -17,11 +17,8 @@ import org.example.project.screens.splash.SplashScreen
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.lighthousegames.logging.logging
 
-private const val PLANET_NAME = "planetName"
-private val log = logging("AppNavigation")
-
+private const val LEVEL_KEY_NAME = "level_key_name"
 private const val APP_SOUND = 1
 
 @OptIn(KoinExperimentalAPI::class)
@@ -61,8 +58,8 @@ fun AppNavigation() {
             }, onSettingsOpen = { navHost.navigate(ScreenRoute.SETTING.name) })
         }
         // Game
-        composable("${ScreenRoute.GAME.name}/{$PLANET_NAME}") { backStackEntry ->
-            val str = backStackEntry.arguments?.getString(PLANET_NAME)
+        composable("${ScreenRoute.GAME.name}/{$LEVEL_KEY_NAME}") { backStackEntry ->
+            val str = backStackEntry.arguments?.getString(LEVEL_KEY_NAME)
             str?.let {
                 GameScreen(
                     onBack = {
