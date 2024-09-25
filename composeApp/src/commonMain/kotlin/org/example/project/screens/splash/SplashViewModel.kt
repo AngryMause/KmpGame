@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.example.project.data.local.local.coreComponent
-import org.example.project.data.local.media.AudioPlayerComponent
 import org.example.project.data.local.state.GameLevelStatus
 import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.MenuLevelModel

@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import org.example.project.model.MenuLevelModel
-import org.lighthousegames.logging.logging
 
 interface AppPreferences {
     suspend fun isSoundEnabled(): Flow<Boolean>

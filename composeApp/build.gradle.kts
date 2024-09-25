@@ -43,7 +43,6 @@ kotlin {
             implementation(compose.preview)
             api(libs.androidx.startup)
             implementation(libs.androidx.activity.compose)
-            implementation("androidx.media3:media3-exoplayer:1.4.1")
         }
         commonMain.dependencies {
             implementation(libs.navigation.compose)

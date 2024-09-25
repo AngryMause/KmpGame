@@ -32,6 +32,7 @@ class AudioPlayerImpl : AudioPlayer {
     override fun playMainSound(id: Int) {
         val avAudioPlayer = AVAudioPlayer(mediaItems[id]!!, error = null)
         avAudioPlayer.prepareToPlay()
+        avAudioPlayer.numberOfLoops = -1
         if (!avAudioPlayer.isPlaying()) {
             avAudioPlayer.play()
         }
