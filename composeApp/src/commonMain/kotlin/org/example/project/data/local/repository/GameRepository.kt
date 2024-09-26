@@ -1,5 +1,6 @@
 package org.example.project.data.local.repository
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import firstkmpproject.composeapp.generated.resources.Res
@@ -7,6 +8,12 @@ import firstkmpproject.composeapp.generated.resources.candy2
 import firstkmpproject.composeapp.generated.resources.ckake2
 import firstkmpproject.composeapp.generated.resources.level1
 import firstkmpproject.composeapp.generated.resources.level2
+import firstkmpproject.composeapp.generated.resources.level3
+import firstkmpproject.composeapp.generated.resources.level4
+import firstkmpproject.composeapp.generated.resources.level5
+import firstkmpproject.composeapp.generated.resources.level6
+import firstkmpproject.composeapp.generated.resources.level7
+import firstkmpproject.composeapp.generated.resources.level8
 import firstkmpproject.composeapp.generated.resources.red_candy2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -24,7 +31,6 @@ import org.example.project.data.local.state.GameStatus
 import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.GameLevelItemModel
 import org.example.project.model.GameTopBarModel
-import org.example.project.model.ItemListModel
 import org.example.project.model.SingleDroppedItemModel
 import org.jetbrains.compose.resources.DrawableResource
 import org.lighthousegames.logging.logging
@@ -32,6 +38,12 @@ import kotlin.random.Random
 
 private const val SIZE = 100
 private const val SCREEN_START_POSITION = 400
+private const val TOB_BAR_PROGRESS_STEP = 0.1f
+private const val DROP_DOWN_UPDATE_STEP = 30
+private const val SIZE_UPDATE_STEP = 4
+private const val MOVE_UP_STEP = 30
+private const val ITEM_EXPLOSION_SIZE = 200
+private const val ITEM_MOVE_UP_SIZE = 60
 
 class GameRepository(
     private val progressCountDownTimer: ProgressCountDownTimer,
@@ -40,9 +52,9 @@ class GameRepository(
     val log = logging("GameRepository")
     private val _gameStatus = MutableStateFlow<GameStatus>(GameStatus.Loading)
     val gameStatus = _gameStatus.asStateFlow()
-    private val _gameTopBarModel = MutableStateFlow(GameTopBarModel("", 0f, 0))
     private val _gameLevel = MutableStateFlow(GameLevelItemModel.Zero)
     val gameLevel = _gameLevel.asStateFlow()
+    private val _gameTopBarModel = MutableStateFlow(GameTopBarModel("", 0f, 0))
     val gameTopBarModel = _gameTopBarModel.asStateFlow()
     private val _tapOffset = onTapEvent.onTapEvent
     private var screenSize = IntSize.Zero
@@ -50,7 +62,7 @@ class GameRepository(
     private var reloadGameItem: GameLevelItemModel = GameLevelItemModel.Zero
     private var reloadToolbar: GameTopBarModel = GameTopBarModel("", 0f, 0)
     val isUltimatePressed = progressCountDownTimer.timer
-    private var isUpdateSend = false
+    private var isUpdateSend = true
     suspend fun initGame(screenSize: IntSize, gameLevel: String) {
         if (gameStatus.value == GameStatus.Loading) {
             this.screenSize = screenSize
@@ -66,7 +78,6 @@ class GameRepository(
         progressCountDownTimer.startTimer()
     }
 
-
     suspend fun setGameStatus(status: GameStatus) {
         _gameStatus.emit(status)
     }
@@ -75,7 +86,7 @@ class GameRepository(
         level: String,
         time: Int,
         levelBackground: DrawableResource? = null,
-        droppedImageList: List<ItemListModel> = emptyList(),
+        droppedImageList: List<SingleDroppedItemModel> = emptyList(),
         singleDroppedItemModel: SingleDroppedItemModel? = null,
     ) {
         reloadToolbar = GameTopBarModel(level, levelTime = time)
@@ -91,7 +102,7 @@ class GameRepository(
         _gameTopBarModel.emit(reloadToolbar)
     }
 
-    suspend fun udpateGame() {
+    suspend fun updateGame() {
         coroutineScope {
             launch(Dispatchers.Default) {
                 while (gameTopBarModel.value.levelTime >= 0) {
@@ -115,14 +126,15 @@ class GameRepository(
     private suspend fun checkGameStatus() {
         when {
             gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress <= 0.3f -> {
-                log.e { "checkGameStatus ${gameTopBarModel.value.levelProgress}" }
                 setGameStatus(
                     GameStatus.LevelCompleted(LevelProgressState.NOT_COMPLETED)
                 )
+                _gameStatus.emit(GameStatus.GameOver)
             }
 
             gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress >= 0.3f -> setGameStatus(
                 GameStatus.LevelCompleted(LevelProgressState.ONE_STAR)
+
             )
 
             gameTopBarModel.value.levelTime == 0 && gameTopBarModel.value.levelProgress >= 0.66f -> setGameStatus(
@@ -139,7 +151,6 @@ class GameRepository(
 
             else -> Unit
         }
-
     }
 
     private suspend fun updateGameTimer() {
@@ -162,7 +173,7 @@ class GameRepository(
         )
         _gameTopBarModel.emit(reloadToolbar)
         setGameStatus(GameStatus.Playing)
-        udpateGame()
+        updateGame()
         progressCountDownTimer.resetTimer()
     }
 
@@ -177,8 +188,8 @@ class GameRepository(
     }
 
     private suspend fun resetPosition(singleDroppedItemModel: SingleDroppedItemModel) {
-        if (isUpdateSend) {
-            isUpdateSend = false
+        if (!isUpdateSend) {
+            isUpdateSend = true
         }
         val update = singleDroppedItemModel.intOffset.copy(
             x = Random.nextInt(screenSize.width - (singleDroppedItemModel.size.width + 20)),
@@ -194,68 +205,13 @@ class GameRepository(
         )
     }
 
-    private suspend fun updateItemByLongPress(singleDroppedItemModel: SingleDroppedItemModel) {
-        val itemOffset = singleDroppedItemModel.intOffset
-        val itemSize = singleDroppedItemModel.size
-        val tapOffset = _tapOffset.value.offset
-        if (tapOffset.x >= itemOffset.x && tapOffset.x <= itemOffset.x + itemSize.width &&
-            tapOffset.y >= itemOffset.y && tapOffset.y <= itemOffset.y + itemSize.height.toFloat()
-        ) {
-            if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width < 200) {
-                val singleDroppedItem = singleDroppedItemModel.copy(
-                    size = IntSize(
-                        width = singleDroppedItemModel.size.width + 3,
-                        height = singleDroppedItemModel.size.height + 3
-                    )
-                )
-                _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
-            } else if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width >= 200) {
-                resetPosition(singleDroppedItemModel)
-            }
-        } else {
-            if (!_tapOffset.value.isLongPress && singleDroppedItemModel.size.width < 200) {
-                if (!isUpdateSend) {
-                    _gameTopBarModel.update { gameTopBarModel ->
-                        gameTopBarModel.copy(levelProgress = gameTopBarModel.levelProgress + 0.1f)
-                    }
-                    _gameLevel.update { gameLevel ->
-                        gameLevel.copy(
-                            singleDroppedItemModel = gameLevel.singleDroppedItemModel?.copy(
-                                alpha = 0.5f
-                            )
-                        )
-                    }
-                    isUpdateSend = true
-                }
-                moveUp(singleDroppedItemModel)
-            } else {
-                resetPosition(singleDroppedItemModel)
-            }
-            val singleDroppedItem = singleDroppedItemModel.copy(
-                intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y + 50)
-            )
-            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
-        }
-    }
-
-    private suspend fun moveUp(singleDroppedItemModel: SingleDroppedItemModel) {
-        if (singleDroppedItemModel.intOffset.y >= SCREEN_START_POSITION) {
-            val singleDroppedItem = singleDroppedItemModel.copy(
-                intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y - 40)
-            )
-            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
-        } else {
-            resetPosition(singleDroppedItemModel)
-        }
-    }
-
     private suspend fun updateItemDroppedList() {
         if (gameLevel.value.itemList.isEmpty()) return
         val droppedItemModelList = gameLevel.value.itemList
         val test = droppedItemModelList.map { itemListModel ->
             if (itemListModel.intOffset.y <= screenSize.height) {
                 val update = itemListModel.intOffset.copy(
-                    y = itemListModel.intOffset.y + 10
+                    y = itemListModel.intOffset.y + DROP_DOWN_UPDATE_STEP
                 )
                 return@map itemListModel.copy(intOffset = update)
             } else {
@@ -269,13 +225,82 @@ class GameRepository(
         _gameLevel.emit(_gameLevel.value.copy(itemList = test))
     }
 
+    private suspend fun updateItemByLongPress(singleDroppedItemModel: SingleDroppedItemModel) {
+        val itemOffset = singleDroppedItemModel.intOffset
+        val itemSize = singleDroppedItemModel.size
+        val tapOffset = _tapOffset.value.offset
+        if (isTapOnItem(itemSize = itemSize, itemOffset = itemOffset, tapOffset = tapOffset)) {
+            updateItemSize(singleDroppedItemModel)
+        } else {
+            if (!_tapOffset.value.isLongPress && singleDroppedItemModel.size.width + ITEM_MOVE_UP_SIZE != 160) {
+                moveUp(singleDroppedItemModel)
+            } else {
+                updateItemY(singleDroppedItemModel)
+            }
+        }
+    }
+
+    private fun isTapOnItem(itemSize: IntSize, itemOffset: IntOffset, tapOffset: Offset) =
+        tapOffset.x >= itemOffset.x && tapOffset.x <= itemOffset.x + itemSize.width &&
+                tapOffset.y >= itemOffset.y && tapOffset.y <= itemOffset.y + itemSize.height.toFloat()
+
+
+    private suspend fun updateItemY(singleDroppedItemModel: SingleDroppedItemModel) {
+        val singleDroppedItem = singleDroppedItemModel.copy(
+            intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y + DROP_DOWN_UPDATE_STEP)
+        )
+        _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+    }
+
+    private suspend fun updateItemSize(singleDroppedItemModel: SingleDroppedItemModel) {
+        if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE) {
+            val singleDroppedItem = singleDroppedItemModel.copy(
+                size = IntSize(
+                    width = singleDroppedItemModel.size.width + SIZE_UPDATE_STEP,
+                    height = singleDroppedItemModel.size.height + SIZE_UPDATE_STEP
+                )
+            )
+            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+        } else if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width >= ITEM_EXPLOSION_SIZE) {
+            resetPosition(singleDroppedItemModel)
+        }
+    }
+
+    private fun updateTopBarProgress() {
+        _gameTopBarModel.update { gameTopBarModel ->
+            gameTopBarModel.copy(levelProgress = gameTopBarModel.levelProgress + TOB_BAR_PROGRESS_STEP)
+        }
+    }
+
+    private suspend fun moveUp(singleDroppedItemModel: SingleDroppedItemModel) {
+        if (singleDroppedItemModel.intOffset.y >= SCREEN_START_POSITION) {
+            if (isUpdateSend) {
+                _gameLevel.update { gameLevel ->
+                    gameLevel.copy(
+                        singleDroppedItemModel = gameLevel.singleDroppedItemModel?.copy(
+                            alpha = 0.3f
+                        )
+                    )
+                }
+                isUpdateSend = false
+            }
+            val singleDroppedItem = singleDroppedItemModel.copy(
+                intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y - MOVE_UP_STEP)
+            )
+            _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
+        } else {
+            updateTopBarProgress()
+            resetPosition(singleDroppedItemModel)
+        }
+    }
+
 
     private suspend fun getGameLevel(level: String) {
         return when (level) {
             GameLevelStatus.LEVEL_0NE.levelName -> {
                 setLevelItem(
                     level,
-                    13,
+                    23,
                     Res.drawable.level1,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
@@ -294,17 +319,17 @@ class GameRepository(
                     13,
                     Res.drawable.level2,
                     droppedImageList = listOf(
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.ckake2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 100)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 200)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.red_candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 300)
                         ),
                     )
                 )
@@ -314,7 +339,7 @@ class GameRepository(
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level1,
+                    Res.drawable.level3,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
                         intOffset = IntOffset(
@@ -327,11 +352,10 @@ class GameRepository(
             }
 
             GameLevelStatus.LEVEL_FOUR.levelName -> {
-                log.e { "getGameLevel ${level}" }
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level1,
+                    Res.drawable.level4,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
                         intOffset = IntOffset(
@@ -347,7 +371,7 @@ class GameRepository(
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level1,
+                    Res.drawable.level5,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
                         intOffset = IntOffset(
@@ -363,19 +387,19 @@ class GameRepository(
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level2,
+                    Res.drawable.level6,
                     droppedImageList = listOf(
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.ckake2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 100)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 200)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.red_candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 300)
                         ),
                     )
                 )
@@ -385,19 +409,19 @@ class GameRepository(
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level2,
+                    Res.drawable.level7,
                     droppedImageList = listOf(
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.ckake2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 100)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 200)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.red_candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 300)
                         ),
                     )
                 )
@@ -407,30 +431,29 @@ class GameRepository(
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level2,
+                    Res.drawable.level8,
                     droppedImageList = listOf(
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.ckake2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 100)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 100)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 200)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 200)
                         ),
-                        ItemListModel(
+                        SingleDroppedItemModel(
                             Res.drawable.red_candy2,
-                            IntOffset(Random.nextInt(screenSize.width - (120)), 300)
+                            intOffset = IntOffset(Random.nextInt(screenSize.width - (120)), 300)
                         ),
                     )
                 )
             }
 
             GameLevelStatus.LEVEL_NINE.levelName -> {
-                log.e { "getGameLevel ${level}" }
                 setLevelItem(
                     level,
                     13,
-                    Res.drawable.level1,
+                    Res.drawable.level8,
                     singleDroppedItemModel = SingleDroppedItemModel(
                         Res.drawable.candy2,
                         intOffset = IntOffset(

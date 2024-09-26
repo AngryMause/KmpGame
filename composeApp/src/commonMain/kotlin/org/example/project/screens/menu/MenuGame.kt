@@ -15,7 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,7 +68,10 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
                         rotationZ = persAnimation.value * 23
                     }
             )
-            LazyRow(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Fixed(3),
+                modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth().wrapContentSize()
+            ) {
                 items(gameLevelList.value.size) { index ->
                     val levelList = gameLevelList.value[index]
                     log.e { "MenuGame: $levelList" }

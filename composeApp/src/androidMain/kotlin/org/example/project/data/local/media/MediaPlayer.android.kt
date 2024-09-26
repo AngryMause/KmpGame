@@ -3,6 +3,7 @@ package org.example.project.data.local.media
 import android.media.MediaPlayer
 import android.os.Build
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.flow.Flow
 import org.example.project.R
 import org.example.project.applicationContext
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -21,10 +22,19 @@ class AudioPlayerImpl() : AudioPlayer {
         mediaPlayer2.start()
     }
 
+    override fun pauseMainSound() {
+        mediaPlayer1.pause()
+    }
+
+    init {
+        mediaPlayer1.isLooping = true
+    }
+
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun playMainSound(id: Int) {
-        mediaPlayer1.isLooping = true
-        mediaPlayer1.start()
+        if (!mediaPlayer1.isPlaying) {
+            mediaPlayer1.start()
+        }
     }
 
 

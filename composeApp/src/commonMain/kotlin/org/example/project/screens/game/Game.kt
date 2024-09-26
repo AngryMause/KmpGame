@@ -11,6 +11,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +27,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -42,6 +46,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import firstkmpproject.composeapp.generated.resources.Res
+import firstkmpproject.composeapp.generated.resources.back_arrow
 import firstkmpproject.composeapp.generated.resources.game_level
 import firstkmpproject.composeapp.generated.resources.game_progress_bar_game
 import firstkmpproject.composeapp.generated.resources.pers
@@ -70,7 +75,12 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     val gameLevel = viewModel.gameLevel.collectAsState()
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
     val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
+    val interactionSource = remember { MutableInteractionSource() }
+    val tws = interactionSource.collectIsPressedAsState()
+    LaunchedEffect(tws) {
+        log.e { "tws $tws" }
 
+    }
     Box(
         modifier = Modifier.fillMaxSize().onGloballyPositioned {
             viewModel.initGame(it.size, string)
@@ -85,6 +95,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             levelName = gameTopBarModel.value.levelName,
             gameProgress = gameTopBarModel.value.levelProgress
         )
+
         when (gameStatus.value) {
             GameStatus.Loading -> {
                 Icon(
@@ -127,6 +138,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                                 },
 
                                 onLongPress = { ofset ->
+                                    log.e { "onLongPress" }
                                     viewModel.setTapOffset(
                                         OnTapEventModel(
                                             isLongPress = true,
@@ -135,7 +147,8 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                                     )
                                 }
                             )
-                        }, gameLevel = gameLevel.value
+                        },
+                    gameLevel = gameLevel.value
                 )
                 Image(
                     painter = painterResource(Res.drawable.ultimate),
@@ -179,7 +192,13 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                     }
                 )
             }
+
         }
+        Image(painter = painterResource(Res.drawable.back_arrow),
+            contentDescription = "Back",
+            modifier = Modifier.align(
+                Alignment.TopStart
+            ).padding(6.dp).size(20.dp).clickable { onBack() })
     }
 }
 
@@ -255,7 +274,7 @@ fun GameTopBar(modifier: Modifier, time: Int, levelName: String, gameProgress: F
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                levelName.toString(),
+                levelName,
                 color = Color.White,
                 fontSize = 40.sp,
                 style = getTypography().h1,

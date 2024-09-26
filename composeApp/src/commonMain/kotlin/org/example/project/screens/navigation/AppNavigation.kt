@@ -2,14 +2,19 @@ package org.example.project.screens.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.multiplatform.lifecycle.LifecycleEvent
+import com.multiplatform.lifecycle.LifecycleObserver
+import com.multiplatform.lifecycle.LocalLifecycleTracker
 import org.example.project.screens.game.GameScreen
 import org.example.project.screens.menu.MenuGame
 import org.example.project.screens.setting.SettingScreen
@@ -19,7 +24,23 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 private const val LEVEL_KEY_NAME = "level_key_name"
-private const val APP_SOUND = 1
+
+@Composable
+private fun LifecycleTest(lifeCycle: (LifecycleEvent) -> Unit) {
+    val lifecycleTracker = LocalLifecycleTracker.current
+    DisposableEffect(Unit) {
+        val listener =
+            object : LifecycleObserver {
+                override fun onEvent(event: LifecycleEvent) {
+                    lifeCycle(event)
+                }
+            }
+        lifecycleTracker.addObserver(listener)
+        onDispose {
+            lifecycleTracker.removeObserver(listener)
+        }
+    }
+}
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
@@ -28,8 +49,18 @@ fun AppNavigation() {
     val viewModel = koinViewModel<AppViewModel>()
     val imageResource = viewModel.mainScreen.collectAsState()
 
-    LaunchedEffect(true) {
-        viewModel.playSound(APP_SOUND)
+    LifecycleTest { lifecycleEvent ->
+        when (lifecycleEvent) {
+            LifecycleEvent.OnPauseEvent -> {
+                viewModel.pauseSong()
+            }
+
+            LifecycleEvent.OnResumeEvent -> {
+                viewModel.playSound()
+            }
+
+            else -> Unit
+        }
     }
     NavHost(
         modifier = Modifier.fillMaxSize()
@@ -38,7 +69,7 @@ fun AppNavigation() {
                 contentScale = ContentScale.FillBounds
             ),
         navController = navHost,
-        startDestination = ScreenRoute.SETTING.name
+        startDestination = ScreenRoute.MENU.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {

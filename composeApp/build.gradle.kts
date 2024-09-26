@@ -66,6 +66,9 @@ kotlin {
             api(libs.datastore.preferences)
             api(libs.datastore)
 
+            api("io.github.kevinnzou:compose-multiplatform-lifecycle-tracker:1.0.0")
+
+
             implementation(libs.kotlinx.serialization.json)
         }
     }

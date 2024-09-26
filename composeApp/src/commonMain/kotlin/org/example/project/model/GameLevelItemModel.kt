@@ -1,6 +1,5 @@
 package org.example.project.model
 
-import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import firstkmpproject.composeapp.generated.resources.Res
@@ -9,7 +8,7 @@ import org.jetbrains.compose.resources.DrawableResource
 
 data class GameLevelItemModel(
     val background: DrawableResource? = null,
-    val itemList: List<ItemListModel> = emptyList(),
+    val itemList: List<SingleDroppedItemModel> = emptyList(),
     val singleDroppedItemModel: SingleDroppedItemModel? = null,
 ) {
     companion object {
@@ -23,11 +22,6 @@ data class SingleDroppedItemModel(
     val drawableResource: DrawableResource,
     val alpha: Float = 1f,
     val intOffset: IntOffset = IntOffset.Zero,
-    val size: IntSize = IntSize(100, 100)
+    var size: IntSize = IntSize(100, 100)
 )
 
-data class ItemListModel(
-    val drawableResource: DrawableResource,
-    val intOffset: IntOffset = IntOffset.Zero,
-    val size: IntSize = IntSize(100, 100)
-)

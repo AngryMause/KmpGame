@@ -3,6 +3,7 @@ import ComposeApp
 
 @main
 struct iOSApp: App {
+    
      init() {
      HelperKt.initializeKoin()
      MainViewControllerKt.initialize()

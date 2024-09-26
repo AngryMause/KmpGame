@@ -17,7 +17,6 @@ class ProgressCountDownTimer {
     private val _timer =
         MutableStateFlow(ProgressCountDownTimerModel())
     val timer = _timer.asStateFlow()
-    private var isReset = false
 
     suspend fun startTimer() {
         _timer.emit(timer.value.copy(isFinished = false))

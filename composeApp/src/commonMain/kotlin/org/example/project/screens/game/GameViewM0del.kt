@@ -48,23 +48,12 @@ class GameViewM0del(
 
     fun saveLevelRecords(index: String, levelProgressState: LevelProgressState) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = localData.getLevelList()
-            log.e { "saveLevelRecords list $list" }
-            list[index.toInt() - 1].levelProgress = levelProgressState
-            list[index.toInt()].isLevelUnlocked = true
-
-//            val newList = list.map {
-//                if (it == index.toInt() - 1) {
-//                    it.levelName.levelName.toInt() + 1
-//                    it.copy(isLevelUnlocked = true, levelProgress = levelProgressState)
-//                } else {
-//                    it
-//                }
-//            }
-//            log.e { "newList $newList" }
-            log.e { "saveLevelRecords  after resetData list ${list[index.toInt() + 1]}" }
-
-            localData.saveLevelList(list)
+            if (levelProgressState != LevelProgressState.NOT_COMPLETED) {
+                val list = localData.getLevelList()
+                list[index.toInt() - 1].levelProgress = levelProgressState
+                list[index.toInt()].isLevelUnlocked = true
+                localData.saveLevelList(list)
+            }
         }
     }
 
@@ -77,7 +66,6 @@ class GameViewM0del(
     override fun onCleared() {
         super.onCleared()
         gameJob?.cancel()
-        log.e { "GameViewM0del onCleared" }
     }
 
     fun setGameStatus(status: GameStatus) {
@@ -88,7 +76,7 @@ class GameViewM0del(
 
     fun startGame() {
         gameJob = viewModelScope.launch {
-            gameRepository.udpateGame()
+            gameRepository.updateGame()
         }
     }
 

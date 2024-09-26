@@ -15,7 +15,6 @@ data class OnTapEventModel(
 
 class OnTapEvent {
     val log = logging("OnTapEvent")
-
     private val _onTapEvent = MutableStateFlow(OnTapEventModel())
     val onTapEvent = _onTapEvent.asStateFlow()
 
