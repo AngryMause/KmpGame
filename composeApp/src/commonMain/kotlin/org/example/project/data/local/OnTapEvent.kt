@@ -27,11 +27,4 @@ class OnTapEvent {
         )
     }
 
-    suspend fun test() {
-        while (onTapEvent.value.isLongPress) {
-            delay(500)
-            log.e { "test ${_onTapEvent.value.size}" }
-            _onTapEvent.emit(_onTapEvent.value.copy(size = _onTapEvent.value.size + 1))
-        }
-    }
 }

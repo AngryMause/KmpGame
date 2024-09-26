@@ -48,7 +48,4 @@ class AudioPlayerImpl : AudioPlayer {
         }
     }
 
-    override fun release() {
-
-    }
 }

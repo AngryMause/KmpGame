@@ -16,6 +16,7 @@ import firstkmpproject.composeapp.generated.resources.level7
 import firstkmpproject.composeapp.generated.resources.level8
 import firstkmpproject.composeapp.generated.resources.red_candy2
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,9 +40,9 @@ import kotlin.random.Random
 private const val SIZE = 100
 private const val SCREEN_START_POSITION = 400
 private const val TOB_BAR_PROGRESS_STEP = 0.1f
-private const val DROP_DOWN_UPDATE_STEP = 30
+private const val DROP_DOWN_UPDATE_STEP = 40
 private const val SIZE_UPDATE_STEP = 4
-private const val MOVE_UP_STEP = 30
+private const val MOVE_UP_STEP = 70
 private const val ITEM_EXPLOSION_SIZE = 200
 private const val ITEM_MOVE_UP_SIZE = 60
 
@@ -70,7 +71,7 @@ class GameRepository(
         }
     }
 
-    fun setTapOffset(onTapEventModel: OnTapEventModel) {
+    suspend fun setTapOffset(onTapEventModel: OnTapEventModel) {
         onTapEvent.setOnTapEvent(onTapEventModel)
     }
 
@@ -198,6 +199,7 @@ class GameRepository(
         _gameLevel.emit(
             gameLevel.value.copy(
                 singleDroppedItemModel = singleDroppedItemModel.copy(
+                    alpha = 1f,
                     intOffset = update,
                     size = IntSize(SIZE, SIZE)
                 )
@@ -274,17 +276,8 @@ class GameRepository(
 
     private suspend fun moveUp(singleDroppedItemModel: SingleDroppedItemModel) {
         if (singleDroppedItemModel.intOffset.y >= SCREEN_START_POSITION) {
-            if (isUpdateSend) {
-                _gameLevel.update { gameLevel ->
-                    gameLevel.copy(
-                        singleDroppedItemModel = gameLevel.singleDroppedItemModel?.copy(
-                            alpha = 0.3f
-                        )
-                    )
-                }
-                isUpdateSend = false
-            }
             val singleDroppedItem = singleDroppedItemModel.copy(
+                alpha = 0.3f,
                 intOffset = singleDroppedItemModel.intOffset.copy(y = singleDroppedItemModel.intOffset.y - MOVE_UP_STEP)
             )
             _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))

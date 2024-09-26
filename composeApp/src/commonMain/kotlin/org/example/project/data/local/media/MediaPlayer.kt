@@ -1,13 +1,10 @@
 package org.example.project.data.local.media
 
-import kotlinx.coroutines.flow.Flow
 
 interface AudioPlayer {
-
     fun playMainSound(id: Int)
     fun playEndSound(id: Int)
     fun pauseMainSound()
-    fun release()
 }
 
 

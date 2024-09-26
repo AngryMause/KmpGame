@@ -37,9 +37,4 @@ class AudioPlayerImpl() : AudioPlayer {
         }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override fun release() {
-
-    }
 }
