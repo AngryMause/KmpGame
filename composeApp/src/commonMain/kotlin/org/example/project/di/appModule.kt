@@ -15,7 +15,7 @@ import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    factory { GameRepository(get(),get(),get(),get(),get()) }
+    factory { GameRepository(get(), get(), get()) }
     factory { ProgressCountDownTimer() }
     factory { ItemLevelCreateManager() }
     factory { OnTapEvent() }

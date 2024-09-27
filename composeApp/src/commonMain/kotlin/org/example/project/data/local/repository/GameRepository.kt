@@ -38,8 +38,6 @@ class GameRepository(
     private val progressCountDownTimer: ProgressCountDownTimer,
     private val onTapEvent: OnTapEvent,
     private val itemCreateManager: ItemLevelCreateManager,
-    private val multipleModelItemServices: MultipleModelItemServices,
-    private val singleModelItemServices: SingleModelItemServices
 ) {
     val log = logging("GameRepository")
     private val _gameStatus = MutableStateFlow<GameStatus>(GameStatus.Loading)
