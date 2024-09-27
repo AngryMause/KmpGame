@@ -33,8 +33,7 @@ const val SIZE_UPDATE_STEP = 4
 const val MOVE_UP_STEP = 70
 const val ITEM_EXPLOSION_SIZE = 320
 const val MIN_ITEM_SIZE_TO_MOVE_UP = 280
-const val ITEM_MOVE_UP_SIZE = 60
-
+const  val MINUS=30
 class GameRepository(
     private val progressCountDownTimer: ProgressCountDownTimer,
     private val onTapEvent: OnTapEvent,
@@ -97,7 +96,7 @@ class GameRepository(
                     if (gameTopBarModel.value.levelTime == 0) {
                         break
                     }
-                    delay(delay)
+
                     if (isUltimatePressed.first().isFinished) {
                         updateItemDroppedInList()
                         updateSingleDroppedItem()
@@ -167,6 +166,7 @@ class GameRepository(
     private suspend fun updateSingleDroppedItem() {
         if (gameLevel.value.singleDroppedItemModel == null) return
         val singleDroppedItemModel = gameLevel.value.singleDroppedItemModel!!
+        delay(delay)
         if (singleDroppedItemModel.intOffset.y <= screenSize.height) {
             updateItemByLongPress(singleDroppedItemModel)
         } else {
@@ -204,6 +204,7 @@ class GameRepository(
     private suspend fun updateItemDroppedInList() {
         if (gameLevel.value.itemList.isEmpty()) return
         val droppedItemModelList = gameLevel.value.itemList
+        delay(delay)
         for (i in droppedItemModelList.indices) {
             val singleDroppedItemModel = droppedItemModelList[i]
             if (droppedItemModelList[i].intOffset.y <= screenSize.height) {
@@ -239,7 +240,7 @@ class GameRepository(
         i: Int,
         singleDroppedItemModel: SingleDroppedItemModel
     ) {
-        if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE) {
+        if (_tapOffset.value.isOnTap && singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE-MINUS) {
             updateItemSize(i, singleDroppedItemModel)
         } else {
             resetItemPositionInList(
@@ -252,10 +253,9 @@ class GameRepository(
         index: Int,
         singleDroppedItemModel: SingleDroppedItemModel
     ) {
-        val maxItemSizeToMoveUp = singleDroppedItemModel.size.width + ITEM_MOVE_UP_SIZE
-        if ((!_tapOffset.value.isLongPress || !_tapOffset.value.isOnTap)
-            && maxItemSizeToMoveUp >= MIN_ITEM_SIZE_TO_MOVE_UP
-            && maxItemSizeToMoveUp <= ITEM_EXPLOSION_SIZE
+        val maxItemSizeToMoveUp = singleDroppedItemModel.size.width
+        if ((!_tapOffset.value.isOnTap)
+            && maxItemSizeToMoveUp in MIN_ITEM_SIZE_TO_MOVE_UP..ITEM_EXPLOSION_SIZE-MINUS
         ) {
             moveItemInListUp(index, singleDroppedItemModel)
         } else {
@@ -269,7 +269,6 @@ class GameRepository(
                 )
             )
         }
-
     }
 
     private suspend fun updateItemSize(
@@ -348,16 +347,15 @@ class GameRepository(
     }
 
     private suspend fun moveItemUpOrDown(singleDroppedItemModel: SingleDroppedItemModel) {
-        val maxItemSizeToMoveUp = singleDroppedItemModel.size.width + ITEM_MOVE_UP_SIZE
+        val maxItemSizeToMoveUp = singleDroppedItemModel.size.width
         log.e { "move maxItemSizeToMoveUp $maxItemSizeToMoveUp" }
-        if ((!_tapOffset.value.isLongPress || !_tapOffset.value.isOnTap)
-            && maxItemSizeToMoveUp >= MIN_ITEM_SIZE_TO_MOVE_UP
-            && maxItemSizeToMoveUp <= ITEM_EXPLOSION_SIZE
+        if ((
+//                    !_tapOffset.value.isLongPress ||
+                    !_tapOffset.value.isOnTap)
+            && maxItemSizeToMoveUp in MIN_ITEM_SIZE_TO_MOVE_UP..ITEM_EXPLOSION_SIZE-MINUS
         ) {
-            log.e { "move up" }
             moveUp(singleDroppedItemModel)
         } else {
-            log.e { "move down" }
             _gameLevel.emit(
                 gameLevel.value.copy(
                     singleDroppedItemModel = updateItemByYDown(
@@ -370,7 +368,7 @@ class GameRepository(
 
     private fun isTapOnItem(itemSize: IntSize, itemOffset: IntOffset, tapOffset: Offset): Boolean {
         return tapOffset.x >= itemOffset.x && tapOffset.x <= itemOffset.x + itemSize.width &&
-                tapOffset.y >= itemOffset.y && tapOffset.y <= itemOffset.y + itemSize.height.toFloat() && _tapOffset.value.isLongPress || _tapOffset.value.isOnTap
+                tapOffset.y >= itemOffset.y && tapOffset.y <= itemOffset.y + itemSize.height.toFloat() && _tapOffset.value.isOnTap
 
     }
 
@@ -390,7 +388,7 @@ class GameRepository(
     }
 
     private suspend fun updateItemSize(singleDroppedItemModel: SingleDroppedItemModel) {
-        if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE) {
+        if (_tapOffset.value.isOnTap && singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE-MINUS) {
             val singleDroppedItem = singleDroppedItemModel.copy(
                 size = IntSize(
                     width = singleDroppedItemModel.size.width + SIZE_UPDATE_STEP,
@@ -398,7 +396,7 @@ class GameRepository(
                 )
             )
             _gameLevel.emit(gameLevel.value.copy(singleDroppedItemModel = singleDroppedItem))
-        } else if (_tapOffset.value.isLongPress && singleDroppedItemModel.size.width >= ITEM_EXPLOSION_SIZE) {
+        } else if (_tapOffset.value.isOnTap && singleDroppedItemModel.size.width >= ITEM_EXPLOSION_SIZE-MINUS) {
             resetPosition(singleDroppedItemModel)
         }
     }

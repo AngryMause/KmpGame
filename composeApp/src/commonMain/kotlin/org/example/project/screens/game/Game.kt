@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -109,40 +110,22 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onPress = { onPressOffset ->
-                                    OnTapEventModel(
-                                        isOnTap = true,
-                                        offset = onPressOffset
-                                    )
-                                    log.e { "onPres onPressOffset $onPressOffset" }
-                                    awaitRelease()
-                                    log.e { "awaitRelease" }
-                                    OnTapEventModel(
-                                        isOnTap = false,
-                                        offset = Offset.Zero
-                                    )
-                                    detectDragGesturesAfterLongPress(
-                                        onDrag = { tt, dragAmount ->
-                                        },
-                                        onDragEnd = {
-                                            viewModel.setTapOffset(
-                                                OnTapEventModel(
-                                                    isLongPress = false,
-                                                    offset = Offset.Zero
-                                                )
-                                            )
-                                        }
-                                    )
-                                },
-
-                                onLongPress = { ofset ->
                                     viewModel.setTapOffset(
                                         OnTapEventModel(
-                                            isLongPress = true,
-                                            offset = ofset
+                                            isOnTap = true,
+                                            offset = onPressOffset
+                                        )
+                                    )
+                                    awaitRelease()
+                                    viewModel.setTapOffset(
+                                        OnTapEventModel(
+                                            isOnTap = false,
+                                            offset = Offset.Zero
                                         )
                                     )
                                 }
                             )
+
                         },
                     gameLevel = gameLevel.value
                 )
@@ -221,19 +204,20 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
     Canvas(
         modifier = canvasModifier
     ) {
-
         when {
             list.isNotEmpty() -> {
                 list.forEach {
-                    if (it.size.width in (MIN_ITEM_SIZE_TO_MOVE_UP + 10)..ITEM_EXPLOSION_SIZE - 10) {
-                        drawCircle(
-                            color = Color.Red,
-                            center = Offset(
+                    val itemColor =
+                        if (it.size.width in (MIN_ITEM_SIZE_TO_MOVE_UP + 10)..ITEM_EXPLOSION_SIZE - 10) Color.Red else Color.Green
+                    if (it.size.width in (MIN_ITEM_SIZE_TO_MOVE_UP)..ITEM_EXPLOSION_SIZE) {
+                        drawBackColorCircle(
+                            this,
+                            backgroundColor = itemColor,
+                            radius = (it.size.width / 2) + 6f,
+                            offset = Offset(
                                 x = (it.intOffset.x + (it.size.width / 2).toFloat()),
                                 y = (it.intOffset.y + (it.size.height / 2).toFloat())
-                            ),
-                            radius = (it.size.width / 2) + 18f,
-                            alpha = 0.4f
+                            )
                         )
                     }
                     drawImage(
@@ -246,16 +230,18 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
             }
 
             imade != null -> {
-                if (gameLevel.singleDroppedItemModel!!.size.width > MIN_ITEM_SIZE_TO_MOVE_UP - 10 && gameLevel.singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE - 10) {
-                    drawCircle(
-                        color = Color.Red,
-                        center = Offset(
-                            x = (gameLevel.singleDroppedItemModel.intOffset.x + (gameLevel.singleDroppedItemModel.size.width / 2).toFloat()),
-                            y = (gameLevel.singleDroppedItemModel.intOffset.y + (gameLevel.singleDroppedItemModel.size.height / 2).toFloat())
-                        ),
-//                            center = it.intOffset.toOffset(),
-                        radius = (gameLevel.singleDroppedItemModel.size.width / 2) + 10f.toFloat(),
-                        alpha = 0.4f
+                val singleItem = gameLevel.singleDroppedItemModel!!
+                val itemColor =
+                    if (singleItem.size.width in (MIN_ITEM_SIZE_TO_MOVE_UP + 10)..ITEM_EXPLOSION_SIZE - 10) Color.Red else Color.Green
+                if (singleItem.size.width in (MIN_ITEM_SIZE_TO_MOVE_UP)..ITEM_EXPLOSION_SIZE) {
+                    drawBackColorCircle(
+                        this,
+                        backgroundColor = itemColor,
+                        radius = (singleItem.size.width / 2) + 6f,
+                        offset = Offset(
+                            x = (singleItem.intOffset.x + (singleItem.size.width / 2).toFloat()),
+                            y = (singleItem.intOffset.y + (singleItem.size.height / 2).toFloat())
+                        )
                     )
                 }
                 drawImage(
@@ -267,6 +253,20 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
             }
         }
     }
+}
+
+private fun drawBackColorCircle(
+    drawScope: DrawScope,
+    backgroundColor: Color,
+    radius: Float,
+    offset: Offset
+) {
+    drawScope.drawCircle(
+        color = backgroundColor,
+        center = offset,
+        radius = radius,
+        alpha = 0.4f
+    )
 }
 
 data class DroppedItemList(

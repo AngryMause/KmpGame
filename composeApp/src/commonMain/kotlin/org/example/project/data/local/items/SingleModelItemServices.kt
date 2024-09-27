@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.update
 import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.repository.DROP_DOWN_UPDATE_STEP
 import org.example.project.data.local.repository.ITEM_EXPLOSION_SIZE
-import org.example.project.data.local.repository.ITEM_MOVE_UP_SIZE
 import org.example.project.data.local.repository.MOVE_UP_STEP
 import org.example.project.data.local.repository.SCREEN_START_POSITION
 import org.example.project.data.local.repository.SIZE_UPDATE_STEP
