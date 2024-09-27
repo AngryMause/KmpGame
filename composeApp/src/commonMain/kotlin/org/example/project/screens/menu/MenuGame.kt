@@ -34,16 +34,14 @@ import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.lighthousegames.logging.logging
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
-    val log = logging("SplashScreen")
+
     val viewModel = koinViewModel<MenuGameViewModel>()
     val gameLevelList = viewModel.gameLevelList.collectAsState()
     LaunchedEffect(null) {
-        log.e { "MenuGame: LaunchedEffect" }
         viewModel.getUnlockedLevelList()
     }
     val persAnimation = rememberInfiniteTransition().animateFloat(
@@ -72,7 +70,6 @@ fun MenuGame(onSettingsOpen: () -> Unit, onGameStar: (String) -> Unit) {
             ) {
                 items(gameLevelList.value.size) { index ->
                     val levelList = gameLevelList.value[index]
-                    log.e { "MenuGame: $levelList" }
                     if (levelList.isLevelUnlocked) {
                         LevelBox(
                             modifier = Modifier.padding(10.dp),

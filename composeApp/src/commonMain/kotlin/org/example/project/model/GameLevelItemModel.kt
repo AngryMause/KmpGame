@@ -19,7 +19,7 @@ data class GameLevelItemModel(
 }
 
 data class SingleDroppedItemModel(
-    val drawableResource: DrawableResource,
+    val drawableResource: DrawableResource? = null,
     val alpha: Float = 1f,
     val intOffset: IntOffset = IntOffset.Zero,
     var size: IntSize = IntSize(100, 100)

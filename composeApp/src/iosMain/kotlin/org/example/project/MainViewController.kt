@@ -9,7 +9,7 @@ import org.example.project.data.local.local.ApplicationComponent
 import org.example.project.data.local.media.AudioPlayerComponent
 import platform.UIKit.UIViewController
 
-fun MainViewController():UIViewController {
+fun MainViewController(): UIViewController {
     val lifecycleTracker = LifecycleTracker()
     return ComposeUIViewController({
         delegate = LifecycleComposeUIVCDelegate(lifecycleTracker)
@@ -18,10 +18,6 @@ fun MainViewController():UIViewController {
             App()
         }
     }
-// return   ComposeUIViewController {
-//
-//        App()
-//    }
 }
 
 fun initialize() {

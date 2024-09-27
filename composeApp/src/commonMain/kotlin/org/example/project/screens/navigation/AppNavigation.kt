@@ -3,12 +3,10 @@ package org.example.project.screens.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -69,7 +67,7 @@ fun AppNavigation() {
                 contentScale = ContentScale.FillBounds
             ),
         navController = navHost,
-        startDestination = ScreenRoute.MENU.name
+        startDestination = ScreenRoute.SPLASH.name
     ) {
         // Splash
         composable(ScreenRoute.SPLASH.name) {

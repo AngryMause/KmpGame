@@ -11,8 +11,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +25,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -53,6 +49,8 @@ import firstkmpproject.composeapp.generated.resources.pers
 import firstkmpproject.composeapp.generated.resources.timer_background
 import firstkmpproject.composeapp.generated.resources.ultimate
 import org.example.project.data.local.OnTapEventModel
+import org.example.project.data.local.repository.ITEM_EXPLOSION_SIZE
+import org.example.project.data.local.repository.MIN_ITEM_SIZE_TO_MOVE_UP
 import org.example.project.data.local.state.GameStatus
 import org.example.project.model.GameLevelItemModel
 import org.example.project.screens.elements.CustomProgressBar
@@ -75,12 +73,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     val gameLevel = viewModel.gameLevel.collectAsState()
     val gameTopBarModel = viewModel.gameTopBarModel.collectAsState()
     val isUltimatePressed = viewModel.isUltimatePressed.collectAsState()
-    val interactionSource = remember { MutableInteractionSource() }
-    val tws = interactionSource.collectIsPressedAsState()
-    LaunchedEffect(tws) {
-        log.e { "tws $tws" }
-
-    }
     Box(
         modifier = Modifier.fillMaxSize().onGloballyPositioned {
             viewModel.initGame(it.size, string)
@@ -89,6 +81,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             contentScale = ContentScale.FillBounds
         )
     ) {
+
         GameTopBar(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f).padding(20.dp),
             time = gameTopBarModel.value.levelTime,
@@ -116,15 +109,19 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onPress = { onPressOffset ->
-                                    viewModel.setTapOffset(
-                                        OnTapEventModel(
-                                            isOnTap = true,
-                                            offset = onPressOffset
-                                        )
+                                    OnTapEventModel(
+                                        isOnTap = true,
+                                        offset = onPressOffset
+                                    )
+                                    log.e { "onPres onPressOffset $onPressOffset" }
+                                    awaitRelease()
+                                    log.e { "awaitRelease" }
+                                    OnTapEventModel(
+                                        isOnTap = false,
+                                        offset = Offset.Zero
                                     )
                                     detectDragGesturesAfterLongPress(
                                         onDrag = { tt, dragAmount ->
-
                                         },
                                         onDragEnd = {
                                             viewModel.setTapOffset(
@@ -138,7 +135,6 @@ fun GameScreen(onBack: () -> Unit, string: String) {
                                 },
 
                                 onLongPress = { ofset ->
-                                    log.e { "onLongPress" }
                                     viewModel.setTapOffset(
                                         OnTapEventModel(
                                             isLongPress = true,
@@ -198,23 +194,25 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             contentDescription = "Back",
             modifier = Modifier.align(
                 Alignment.TopStart
-            ).padding(6.dp).size(20.dp).clickable { onBack() })
+            ).padding(6.dp).size(20.dp)
+                .clickable { onBack() })
     }
 }
 
 @Composable
 fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
     val imade = if (gameLevel.singleDroppedItemModel != null) {
-        imageResource(gameLevel.singleDroppedItemModel.drawableResource)
+        imageResource(gameLevel.singleDroppedItemModel.drawableResource!!)
     } else {
         null
     }
     val list: List<DroppedItemList> = if (gameLevel.itemList.isNotEmpty()) {
         gameLevel.itemList.map {
             DroppedItemList(
-                drawableResource = imageResource(it.drawableResource),
+                drawableResource = imageResource(requireNotNull(it.drawableResource)),
                 intOffset = it.intOffset,
-                size = IntSize(it.size.width, it.size.height)
+                size = IntSize(it.size.width, it.size.height),
+                alpha = it.alpha
             )
         }
     } else {
@@ -223,21 +221,46 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
     Canvas(
         modifier = canvasModifier
     ) {
+
         when {
             list.isNotEmpty() -> {
                 list.forEach {
+                    if (it.size.width in (MIN_ITEM_SIZE_TO_MOVE_UP + 10)..ITEM_EXPLOSION_SIZE - 10) {
+                        drawCircle(
+                            color = Color.Red,
+                            center = Offset(
+                                x = (it.intOffset.x + (it.size.width / 2).toFloat()),
+                                y = (it.intOffset.y + (it.size.height / 2).toFloat())
+                            ),
+                            radius = (it.size.width / 2) + 18f,
+                            alpha = 0.4f
+                        )
+                    }
                     drawImage(
                         image = it.drawableResource,
                         dstOffset = it.intOffset,
-                        dstSize = it.size
+                        dstSize = it.size,
+                        alpha = it.alpha,
                     )
                 }
             }
 
             imade != null -> {
+                if (gameLevel.singleDroppedItemModel!!.size.width > MIN_ITEM_SIZE_TO_MOVE_UP - 10 && gameLevel.singleDroppedItemModel.size.width < ITEM_EXPLOSION_SIZE - 10) {
+                    drawCircle(
+                        color = Color.Red,
+                        center = Offset(
+                            x = (gameLevel.singleDroppedItemModel.intOffset.x + (gameLevel.singleDroppedItemModel.size.width / 2).toFloat()),
+                            y = (gameLevel.singleDroppedItemModel.intOffset.y + (gameLevel.singleDroppedItemModel.size.height / 2).toFloat())
+                        ),
+//                            center = it.intOffset.toOffset(),
+                        radius = (gameLevel.singleDroppedItemModel.size.width / 2) + 10f.toFloat(),
+                        alpha = 0.4f
+                    )
+                }
                 drawImage(
                     image = imade,
-                    alpha = gameLevel.singleDroppedItemModel!!.alpha,
+                    alpha = gameLevel.singleDroppedItemModel.alpha,
                     dstOffset = gameLevel.singleDroppedItemModel.intOffset,
                     dstSize = gameLevel.singleDroppedItemModel.size
                 )
@@ -249,7 +272,8 @@ fun GameArea(canvasModifier: Modifier, gameLevel: GameLevelItemModel) {
 data class DroppedItemList(
     val drawableResource: ImageBitmap,
     val intOffset: IntOffset = IntOffset.Zero,
-    val size: IntSize = IntSize(100, 100)
+    val size: IntSize = IntSize(100, 100),
+    val alpha: Float = 1f
 )
 
 
