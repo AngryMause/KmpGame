@@ -20,7 +20,6 @@ import org.example.project.data.local.state.LevelProgressState
 import org.example.project.model.GameLevelItemModel
 import org.example.project.model.GameTopBarModel
 import org.example.project.model.SingleDroppedItemModel
-import org.lighthousegames.logging.logging
 import kotlin.random.Random
 
 private const val GAME_TIME = 40

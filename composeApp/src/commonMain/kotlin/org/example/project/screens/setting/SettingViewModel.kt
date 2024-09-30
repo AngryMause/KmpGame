@@ -24,11 +24,9 @@ import kotlinx.serialization.json.Json
 import org.example.project.data.local.local.coreComponent
 import org.example.project.data.local.state.LevelProgressState
 import org.example.project.screens.navigation.Background
-import org.lighthousegames.logging.logging
 
 class SettingViewModel
     : ViewModel() {
-    val log = logging("SettingViewModel")
     private val _isSoundEnabled = MutableStateFlow(true)
     val isSoundEnabled = _isSoundEnabled.asStateFlow()
     private val _mainBackGround = MutableStateFlow<List<BackgroundsUnlockedModel>>(emptyList())

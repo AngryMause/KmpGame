@@ -11,10 +11,9 @@ import kotlinx.coroutines.launch
 import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.local.coreComponent
 import org.example.project.data.local.media.AudioPlayerComponent
-import org.example.project.data.local.state.GameStatus
 import org.example.project.data.local.repository.GameRepository
+import org.example.project.data.local.state.GameStatus
 import org.example.project.data.local.state.LevelProgressState
-import org.lighthousegames.logging.logging
 
 private const val END_GAME_SOUND = 0
 

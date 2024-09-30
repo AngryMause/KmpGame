@@ -58,13 +58,11 @@ import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.lighthousegames.logging.logging
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun SettingScreen(onBack: () -> Unit) {
     val viewModel = koinViewModel<SettingViewModel>()
-    val log = logging("SettingScreen")
     val isSoundEnabled = viewModel.isSoundEnabled.collectAsState()
     var checked by remember { mutableStateOf(false) }
     val levelList = viewModel.mainBackGround.collectAsState()

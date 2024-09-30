@@ -36,7 +36,6 @@ import candypopuniverse.composeapp.generated.resources.game_over
 import candypopuniverse.composeapp.generated.resources.home_button
 import candypopuniverse.composeapp.generated.resources.jomhuria_regular
 import candypopuniverse.composeapp.generated.resources.level_complete
-import candypopuniverse.composeapp.generated.resources.level_locked
 import candypopuniverse.composeapp.generated.resources.loading
 import candypopuniverse.composeapp.generated.resources.lose_frame
 import candypopuniverse.composeapp.generated.resources.menu_level

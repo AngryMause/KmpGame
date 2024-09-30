@@ -15,7 +15,6 @@ import kotlinx.serialization.json.Json
 import org.example.project.data.local.local.coreComponent
 import org.example.project.data.local.media.AudioPlayerComponent
 import org.example.project.screens.setting.backList
-import org.lighthousegames.logging.logging
 
 @Serializable
 data class Background(
