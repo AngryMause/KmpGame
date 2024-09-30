@@ -1,6 +1,6 @@
 package org.example.project.data.local.media
 
-import firstkmpproject.composeapp.generated.resources.Res
+import candypopuniverse.composeapp.generated.resources.Res
 
 
 import kotlinx.cinterop.ExperimentalForeignApi

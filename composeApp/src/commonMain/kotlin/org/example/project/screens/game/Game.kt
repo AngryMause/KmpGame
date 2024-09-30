@@ -41,13 +41,13 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.back_arrow
-import firstkmpproject.composeapp.generated.resources.game_level
-import firstkmpproject.composeapp.generated.resources.game_progress_bar_game
-import firstkmpproject.composeapp.generated.resources.pers
-import firstkmpproject.composeapp.generated.resources.timer_background
-import firstkmpproject.composeapp.generated.resources.ultimate
+import candypopuniverse.composeapp.generated.resources.Res
+import candypopuniverse.composeapp.generated.resources.back_arrow
+import candypopuniverse.composeapp.generated.resources.game_level
+import candypopuniverse.composeapp.generated.resources.game_progress_bar_game
+import candypopuniverse.composeapp.generated.resources.pers
+import candypopuniverse.composeapp.generated.resources.timer_background
+import candypopuniverse.composeapp.generated.resources.ultimate
 import org.example.project.data.local.OnTapEventModel
 import org.example.project.data.local.repository.ITEM_EXPLOSION_SIZE
 import org.example.project.data.local.repository.MIN_ITEM_SIZE_TO_MOVE_UP
@@ -61,13 +61,11 @@ import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.lighthousegames.logging.logging
 
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun GameScreen(onBack: () -> Unit, string: String) {
-    val log = logging("GameScreen")
     val viewModel = koinViewModel<GameViewM0del>()
     val gameStatus = viewModel.gameStatus.collectAsState()
     val gameLevel = viewModel.gameLevel.collectAsState()
@@ -83,7 +81,8 @@ fun GameScreen(onBack: () -> Unit, string: String) {
     ) {
 
         GameTopBar(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f).padding(20.dp),
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f)
+                .padding(top = 30.dp, start = 10.dp, end = 10.dp),
             time = gameTopBarModel.value.levelTime,
             levelName = gameTopBarModel.value.levelName,
             gameProgress = gameTopBarModel.value.levelProgress
@@ -176,7 +175,7 @@ fun GameScreen(onBack: () -> Unit, string: String) {
             contentDescription = "Back",
             modifier = Modifier.align(
                 Alignment.TopStart
-            ).padding(6.dp).size(20.dp)
+            ).padding(top = 8.dp, start = 22.dp).size(30.dp)
                 .clickable { onBack() })
     }
 }

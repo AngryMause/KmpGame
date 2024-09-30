@@ -17,7 +17,7 @@ import org.example.project.data.local.repository.TOB_BAR_PROGRESS_STEP
 import org.example.project.model.SingleDroppedItemModel
 import org.lighthousegames.logging.logging
 
-val log = logging("SingleModelItemServices")
+private val log = logging("SingleModelItemServices")
 
 // in future will be used for single item
 class SingleModelItemServices {

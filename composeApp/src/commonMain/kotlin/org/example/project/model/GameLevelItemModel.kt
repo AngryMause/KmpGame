@@ -2,8 +2,8 @@ package org.example.project.model
 
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
-import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.main_backgroud
+import candypopuniverse.composeapp.generated.resources.Res
+import candypopuniverse.composeapp.generated.resources.main_backgroud
 import org.jetbrains.compose.resources.DrawableResource
 
 data class GameLevelItemModel(

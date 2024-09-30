@@ -22,7 +22,6 @@ private const val END_GAME_SOUND = 0
 class GameViewM0del(
     private val gameRepository: GameRepository,
 ) : ViewModel() {
-    val log = logging("GameViewM0del")
     private val audioPlayer = AudioPlayerComponent.audioPlayer
     private val localData = coreComponent.appPreferences
     val gameTopBarModel = gameRepository.gameTopBarModel
@@ -38,7 +37,7 @@ class GameViewM0del(
         }
     }
 
-    fun playSound(id: Int = 0) {
+    fun playSound() {
         viewModelScope.launch {
             if (localData.isSoundEnabled().first()) {
                 audioPlayer.playEndSound(END_GAME_SOUND)

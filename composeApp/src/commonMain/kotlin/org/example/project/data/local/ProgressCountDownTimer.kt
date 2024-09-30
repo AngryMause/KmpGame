@@ -4,7 +4,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-private const val TIMER_COUNT = 3
+private const val TIMER_COUNT = 2
 private const val PROGRESS_TIME = 100
 
 data class ProgressCountDownTimerModel(

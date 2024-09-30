@@ -26,10 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.level_locked
-import firstkmpproject.composeapp.generated.resources.pers
-import firstkmpproject.composeapp.generated.resources.settings_button
+import candypopuniverse.composeapp.generated.resources.Res
+import candypopuniverse.composeapp.generated.resources.level_locked
+import candypopuniverse.composeapp.generated.resources.pers
+import candypopuniverse.composeapp.generated.resources.settings_button
 import org.example.project.screens.elements.LevelBox
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel

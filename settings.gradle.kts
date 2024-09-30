@@ -1,4 +1,4 @@
-rootProject.name = "FirstKmpProject"
+rootProject.name = "CandyPopUniverse"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

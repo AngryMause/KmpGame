@@ -19,20 +19,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.main_backgroud
-import firstkmpproject.composeapp.generated.resources.progressbar_background
-import firstkmpproject.composeapp.generated.resources.splash_image
+import candypopuniverse.composeapp.generated.resources.Res
+import candypopuniverse.composeapp.generated.resources.main_backgroud
+import candypopuniverse.composeapp.generated.resources.progressbar_background
+import candypopuniverse.composeapp.generated.resources.splash_image
 import org.example.project.screens.elements.CustomProgressBar
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.lighthousegames.logging.logging
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 fun SplashScreen(openMenu: () -> Unit) {
-    val log = logging("SplashScreen")
     var enabled by remember { mutableStateOf(false) }
     val viewModel = koinViewModel<SplashViewModel>()
     val alpha: Float by animateFloatAsState(

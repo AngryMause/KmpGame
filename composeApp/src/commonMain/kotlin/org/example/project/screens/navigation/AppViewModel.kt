@@ -2,8 +2,8 @@ package org.example.project.screens.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import firstkmpproject.composeapp.generated.resources.Res
-import firstkmpproject.composeapp.generated.resources.main_backgroud
+import candypopuniverse.composeapp.generated.resources.Res
+import candypopuniverse.composeapp.generated.resources.main_backgroud
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +27,6 @@ private const val APP_SOUND = 1
 
 class AppViewModel(
 ) : ViewModel() {
-    val log = logging("AppViewModel")
     private val _mainScreen = MutableStateFlow(Res.drawable.main_backgroud)
     val mainScreen = _mainScreen.asStateFlow()
     private val audioPlayer = AudioPlayerComponent.audioPlayer
