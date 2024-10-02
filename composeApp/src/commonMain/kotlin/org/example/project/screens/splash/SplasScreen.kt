@@ -53,7 +53,7 @@ fun SplashScreen(openMenu: () -> Unit) {
         Image(
             painterResource(Res.drawable.splash_image),
             contentDescription = null,
-            modifier = Modifier.align(Alignment.Center).fillMaxWidth()
+            modifier = Modifier.align(Alignment.Center).padding(bottom = 20.dp).fillMaxWidth()
         )
         CustomProgressBar(
             Modifier.align(Alignment.BottomCenter).padding(20.dp),

@@ -23,7 +23,6 @@ data class Background(
 
 private const val APP_SOUND = 1
 
-
 class AppViewModel(
 ) : ViewModel() {
     private val _mainScreen = MutableStateFlow(Res.drawable.main_backgroud)
@@ -53,7 +52,6 @@ class AppViewModel(
     }
 
     init {
-
         viewModelScope.launch(Dispatchers.IO) {
             coreComponent.appPreferences.getBackGroundImage.collect { background ->
                 if (background.isNotEmpty()) {

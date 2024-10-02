@@ -3,27 +3,29 @@ package org.example.project.data.local.items
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import candypopuniverse.composeapp.generated.resources.Res
-import candypopuniverse.composeapp.generated.resources.blue_candy1
-import candypopuniverse.composeapp.generated.resources.blue_white_candy
-import candypopuniverse.composeapp.generated.resources.candy2
-import candypopuniverse.composeapp.generated.resources.chocolate_candy1
+import candypopuniverse.composeapp.generated.resources.cake1
+import candypopuniverse.composeapp.generated.resources.cake4
+import candypopuniverse.composeapp.generated.resources.cake5
+import candypopuniverse.composeapp.generated.resources.cake6
+import candypopuniverse.composeapp.generated.resources.cake7
+import candypopuniverse.composeapp.generated.resources.cake8
 import candypopuniverse.composeapp.generated.resources.chokolate
 import candypopuniverse.composeapp.generated.resources.ckake2
 import candypopuniverse.composeapp.generated.resources.ckake3
-import candypopuniverse.composeapp.generated.resources.fruit1
-import candypopuniverse.composeapp.generated.resources.fruit2
-import candypopuniverse.composeapp.generated.resources.fruit_cacke
-import candypopuniverse.composeapp.generated.resources.green_candy
-import candypopuniverse.composeapp.generated.resources.ice_cream
+import candypopuniverse.composeapp.generated.resources.fruit_lemon
 import candypopuniverse.composeapp.generated.resources.level1
 import candypopuniverse.composeapp.generated.resources.level2
 import candypopuniverse.composeapp.generated.resources.level3
+import candypopuniverse.composeapp.generated.resources.level4
+import candypopuniverse.composeapp.generated.resources.level5
 import candypopuniverse.composeapp.generated.resources.level6
 import candypopuniverse.composeapp.generated.resources.level7
 import candypopuniverse.composeapp.generated.resources.level8
+import candypopuniverse.composeapp.generated.resources.level9
 import candypopuniverse.composeapp.generated.resources.main_backgroud
-import candypopuniverse.composeapp.generated.resources.pink_rainbow_candy
-import candypopuniverse.composeapp.generated.resources.red_candy1
+import candypopuniverse.composeapp.generated.resources.rainbow_candy
+import candypopuniverse.composeapp.generated.resources.strawberry
+import candypopuniverse.composeapp.generated.resources.strawberry_chocolate
 import org.example.project.data.local.repository.SCREEN_START_POSITION
 import org.example.project.data.local.repository.SIZE
 import org.example.project.data.local.state.GameLevelStatus
@@ -42,7 +44,7 @@ class ItemLevelCreateManager {
                 GameLevelItemModel(
                     Res.drawable.level1,
                     singleDroppedItemModel = SingleDroppedItemModel(
-                        Res.drawable.candy2,
+                        Res.drawable.cake6,
                         intOffset = IntOffset(
                             Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                             SCREEN_START_POSITION
@@ -55,6 +57,7 @@ class ItemLevelCreateManager {
             GameLevelStatus.LEVEL_TWO.levelName -> {
                 GameLevelItemModel(
                     Res.drawable.level2,
+                    delay = 44,
                     itemList = listOf(
                         SingleDroppedItemModel(
                             Res.drawable.chokolate,
@@ -64,7 +67,7 @@ class ItemLevelCreateManager {
                             )
                         ),
                         SingleDroppedItemModel(
-                            Res.drawable.chocolate_candy1,
+                            Res.drawable.cake7,
                             intOffset = IntOffset(
                                 Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                                 SCREEN_START_POSITION
@@ -77,8 +80,9 @@ class ItemLevelCreateManager {
             GameLevelStatus.LEVEL_THREE.levelName -> {
                 GameLevelItemModel(
                     Res.drawable.level3,
+                    delay = 38,
                     singleDroppedItemModel = SingleDroppedItemModel(
-                        Res.drawable.chokolate,
+                        Res.drawable.cake5,
                         intOffset = IntOffset(
                             Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                             SCREEN_START_POSITION
@@ -90,9 +94,10 @@ class ItemLevelCreateManager {
 
             GameLevelStatus.LEVEL_FOUR.levelName -> {
                 GameLevelItemModel(
-                    Res.drawable.blue_white_candy,
+                    Res.drawable.level4,
+                    delay = 38,
                     singleDroppedItemModel = SingleDroppedItemModel(
-                        Res.drawable.candy2,
+                        Res.drawable.cake1,
                         intOffset = IntOffset(
                             Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                             SCREEN_START_POSITION
@@ -104,9 +109,10 @@ class ItemLevelCreateManager {
 
             GameLevelStatus.LEVEL_FIVE.levelName -> {
                 GameLevelItemModel(
-                    Res.drawable.pink_rainbow_candy,
+                    Res.drawable.level5,
+                    delay = 36,
                     singleDroppedItemModel = SingleDroppedItemModel(
-                        Res.drawable.candy2,
+                        Res.drawable.rainbow_candy,
                         intOffset = IntOffset(
                             Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                             SCREEN_START_POSITION
@@ -119,6 +125,7 @@ class ItemLevelCreateManager {
             GameLevelStatus.LEVEL_SIX.levelName -> {
                 GameLevelItemModel(
                     Res.drawable.level6,
+                    delay = 34,
                     itemList = listOf(
                         SingleDroppedItemModel(
                             Res.drawable.ckake2,
@@ -135,7 +142,7 @@ class ItemLevelCreateManager {
                             )
                         ),
                         SingleDroppedItemModel(
-                            Res.drawable.fruit_cacke,
+                            Res.drawable.cake7,
                             intOffset = IntOffset(
                                 Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                                 SCREEN_START_POSITION
@@ -148,26 +155,27 @@ class ItemLevelCreateManager {
             GameLevelStatus.LEVEL_SEVEN.levelName -> {
                 GameLevelItemModel(
                     Res.drawable.level7,
+                    delay = 32,
                     itemList = listOf(
                         SingleDroppedItemModel(
-                            Res.drawable.fruit1,
+                            Res.drawable.fruit_lemon,
+                            intOffset = IntOffset(
+                                Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
+                                SCREEN_START_POSITION + 50
+                            )
+                        ),
+                        SingleDroppedItemModel(
+                            Res.drawable.cake1,
                             intOffset = IntOffset(
                                 Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                                 SCREEN_START_POSITION
                             )
                         ),
                         SingleDroppedItemModel(
-                            Res.drawable.fruit2,
+                            Res.drawable.strawberry,
                             intOffset = IntOffset(
                                 Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
-                                SCREEN_START_POSITION
-                            )
-                        ),
-                        SingleDroppedItemModel(
-                            Res.drawable.ice_cream,
-                            intOffset = IntOffset(
-                                Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
-                                SCREEN_START_POSITION
+                                SCREEN_START_POSITION + 70
                             )
                         ),
                     )
@@ -177,37 +185,33 @@ class ItemLevelCreateManager {
             GameLevelStatus.LEVEL_EIGHT.levelName -> {
                 GameLevelItemModel(
                     Res.drawable.level8,
+                    delay = 36,
                     itemList = listOf(
                         SingleDroppedItemModel(
-                            Res.drawable.red_candy1,
+                            Res.drawable.cake8,
                             intOffset = IntOffset(
                                 Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                                 SCREEN_START_POSITION + 60
                             )
                         ),
                         SingleDroppedItemModel(
-                            Res.drawable.green_candy,
+                            Res.drawable.strawberry_chocolate,
                             intOffset = IntOffset(
                                 Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                                 SCREEN_START_POSITION + 70
                             )
                         ),
-                        SingleDroppedItemModel(
-                            Res.drawable.pink_rainbow_candy,
-                            intOffset = IntOffset(
-                                Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
-                                SCREEN_START_POSITION + 100
-                            )
-                        ),
-                    )
+
+                        )
                 )
             }
 
             GameLevelStatus.LEVEL_NINE.levelName -> {
                 GameLevelItemModel(
-                    Res.drawable.blue_candy1,
+                    Res.drawable.level9,
+                    delay = 30,
                     singleDroppedItemModel = SingleDroppedItemModel(
-                        Res.drawable.candy2,
+                        Res.drawable.cake4,
                         intOffset = IntOffset(
                             Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                             SCREEN_START_POSITION
@@ -221,7 +225,7 @@ class ItemLevelCreateManager {
                 GameLevelItemModel(
                     Res.drawable.main_backgroud,
                     singleDroppedItemModel = SingleDroppedItemModel(
-                        Res.drawable.candy2,
+                        Res.drawable.strawberry,
                         intOffset = IntOffset(
                             Random.nextInt(screenSize.width - (NEGATIVE_VALUE)),
                             SCREEN_START_POSITION

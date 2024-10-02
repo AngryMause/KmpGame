@@ -9,7 +9,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.data.local.OnTapEvent
@@ -47,7 +46,6 @@ class GameRepository(
     val gameTopBarModel = _gameTopBarModel.asStateFlow()
     private val _tapOffset = onTapEvent.onTapEvent
     private var screenSize = IntSize.Zero
-    private var delay = 50L
     private var reloadGameItem: GameLevelItemModel = GameLevelItemModel.Zero
     private var reloadToolbar: GameTopBarModel = GameTopBarModel("", 0f, 0)
     val isUltimatePressed = progressCountDownTimer.timer
@@ -159,7 +157,7 @@ class GameRepository(
     private suspend fun updateSingleDroppedItem() {
         if (gameLevel.value.singleDroppedItemModel == null) return
         val singleDroppedItemModel = gameLevel.value.singleDroppedItemModel!!
-        delay(delay)
+        delay(gameLevel.value.delay)
         if (singleDroppedItemModel.intOffset.y <= screenSize.height) {
             updateItemByLongPress(singleDroppedItemModel)
         } else {
@@ -197,7 +195,7 @@ class GameRepository(
     private suspend fun updateItemDroppedInList() {
         if (gameLevel.value.itemList.isEmpty()) return
         val droppedItemModelList = gameLevel.value.itemList
-        delay(delay)
+        delay(gameLevel.value.delay)
         for (i in droppedItemModelList.indices) {
             val singleDroppedItemModel = droppedItemModelList[i]
             if (droppedItemModelList[i].intOffset.y <= screenSize.height) {

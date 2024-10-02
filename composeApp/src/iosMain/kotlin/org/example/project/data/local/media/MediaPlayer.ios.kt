@@ -19,6 +19,9 @@ class AudioPlayerImpl : AudioPlayer {
 
     @OptIn(ExperimentalForeignApi::class)
     private var avAudioPlayer: AVAudioPlayer = AVAudioPlayer(mediaItems[1]!!, error = null)
+    @OptIn(ExperimentalForeignApi::class)
+
+  private  val avAudioPlayer1 = AVAudioPlayer(mediaItems[0]!!, error = null)
 
     init {
         avPlayerSetting()
@@ -29,12 +32,10 @@ class AudioPlayerImpl : AudioPlayer {
         avAudioPlayer.setNumberOfLoops(-1)
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     override fun playEndSound(id: Int) {
-        val avAudioPlayer = AVAudioPlayer(mediaItems[id]!!, error = null)
-        avAudioPlayer.prepareToPlay()
-        if (!avAudioPlayer.isPlaying()) {
-            avAudioPlayer.play()
+        avAudioPlayer1.prepareToPlay()
+        if (!avAudioPlayer1.isPlaying()) {
+            avAudioPlayer1.play()
         }
     }
 
